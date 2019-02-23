@@ -9,15 +9,6 @@ pub struct Bacon {
     pub data: Vec<Vec<u128>>
 }
 
-// pub struct FryingPan<T> {
-//     pub target: T,
-//     pub key: u128,
-//     pub fried_bacon: Bacon,
-//     pub data: Vec<u128>
-// }
-
-/// serializes and encrypts an item given item and a u128 key
-/// returns fried items
 #[macro_export]
 macro_rules! fry {
     ($item:ident, $key:ident) => {
@@ -38,25 +29,6 @@ macro_rules! fry {
         }
     }
 }
-
-// different approach: provide a wrapping FryingPan to avoid lifetime issues for borrowed content
-/// decrypts a with fry! encrypted item and deserializes into given type
-// #[macro_export]
-// macro_rules! unfry {
-//     ($frying_pan:ident) => {
-//         {
-//             let key = speck::Key::new($key);
-//             for chunk in $frying_pan.bacon.data {
-//                 for encr_byte in chunk.clone() {
-//                     $frying_pan.data.push( key.decrypt_block(encr_byte) as u8 );
-//                 }
-//             } 
-//            // let deserialized: $frying_pan.target = bincode::deserialize(&).unwrap();
-//             println!("{:#?}", frying_pan.data);
-// //deserialized
-//         }
-//     }
-// }
 
 /// decrypts a with fry! encrypted item and deserializes into given type
 #[macro_export]
