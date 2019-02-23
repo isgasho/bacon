@@ -1,0 +1,12 @@
+[package]
+name = "bacon"
+version = "0.1.0"
+authors = ["aspera-non-spernit <g.s.d>"]
+edition = "2018"
+
+[dependencies]
+bincode = "*"
+serde = "*"
+serde_derive = "*"
+speck = "1.1.0"
+rand = "*"
