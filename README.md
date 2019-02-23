@@ -34,30 +34,24 @@ extern crate serde_derive;
 use bacon::Bacon;
 use rand::prelude::*;
 
-#[derive(Debug, Deserialize, Serialize)]
-struct SuperSecretDocument<'a> {
-    content: &'a str
-}
-
-impl <'a>SuperSecretDocument<'a> {
-    fn new(content: &str) -> SuperSecretDocument {
-        SuperSecretDocument { content }
-    }
+#[derive(Clone, Debug, Deserialize, Serialize)]
+struct Person {
+    name: String,
+    age: u8,
+    gender: char
 }
 
 // encrypts a struct using the speck algorithm and decrypts it back
 fn main() {
-    // an arbitrary struct that implements Serialize and Deserialize
-    let ssd = SuperSecretDocument::new("Hello World. How are you?");
-    println!("{:#?}", &ssd);
-    // Create a key, here a random u128
     let mut rng = rand::thread_rng();
     let key = rng.gen_range(u128::min_value(), u128::max_value());
-    // fry some bacon
-    let fried_document: Bacon = fry!(ssd, key);
-    println!("encrypted chunks: {:#?}", fried_document);
-    
-    // unfry the bacon
-    unfry!(encr_chunks, SuperSecretDocument, key);
+
+    let my = Person { name: "Alice".to_string(), age: 7, gender: 'f' };
+    dbg!(&my);
+
+    let fried_bacon: Bacon = fry!(my, key);
+    dbg!(&fried_bacon);
+    let p = unfry!(fried_bacon, Person, key);
+    dbg!(p);
 }
 ```
