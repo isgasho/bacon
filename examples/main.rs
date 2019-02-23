@@ -8,19 +8,6 @@ extern crate serde_derive;
 use bacon::Bacon;
 use rand::prelude::*;
 
-// currently not working due to borrowed content
-
-// #[derive(Clone, Debug, Deserialize, Serialize)]
-// struct SuperSecretDocument<'a> {
-//     content: &'a str
-// }
-
-// impl <'a>SuperSecretDocument<'a> {
-//     fn new(content: &str) -> SuperSecretDocument {
-//         SuperSecretDocument { content }
-//     }
-// }
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 struct Person {
     name: String,
