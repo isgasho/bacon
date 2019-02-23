@@ -10,10 +10,13 @@ use bacon::Bacon;
 use rand::prelude::*;
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+enum Gender { Female, Male }
+#[derive(Clone, Debug, Deserialize, Serialize)]
 struct Person {
     name: String,
     age: u8,
-    gender: char
+    gender: Gender,
+    address: String
 }
 
 // encrypts a struct using the speck algorithm and decrypts it back
@@ -23,7 +26,7 @@ fn main() {
     
     println!("Creating a struct");
 
-    let my = Person { name: "Alice".to_string(), age: 7, gender: 'f' };
+    let my = Person { name: "Sophia Pia ".to_string(), age: 23, gender: Gender::Female, address: "7 Park Avenue, Olympus Mons, Mars".to_string() };
     dbg!(&my);
     println!();
 
@@ -49,4 +52,5 @@ fn main() {
         Ok(p) => { dbg!(p); },
         Err(e) => { dbg!(e); }
     }
+    
 }
