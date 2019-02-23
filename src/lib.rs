@@ -70,8 +70,8 @@ macro_rules! unfry {
                     decr_chunks.push( key.decrypt_block(encr_byte) as u8 );
                 }
             } 
-            let deserialized: $struct = bincode::deserialize(&decr_chunks).unwrap();
-            deserialized
+            let decr: bincode::Result<$struct> = bincode::deserialize(&decr_chunks);
+            decr
         }
     }
 }
