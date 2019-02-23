@@ -1,3 +1,4 @@
+#[forbid(unsafe_code)]
 extern crate bincode;
 extern crate serde;
 #[macro_use]
@@ -5,9 +6,7 @@ extern crate serde_derive;
 extern crate speck;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Bacon {
-    pub data: Vec<Vec<u128>>
-}
+pub struct Bacon { pub data: Vec<Vec<u128>> }
 
 #[macro_export]
 macro_rules! fry {
