@@ -1,3 +1,4 @@
+#![recursion_limit="512"]
 #[forbid(unsafe_code)]
 #[macro_use]
 extern crate bacon;
@@ -5,10 +6,10 @@ extern crate rand;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
+extern crate serde_json;
 
 use bacon::Bacon;
-use rand::prelude::*;
-
+use rand::{ distributions::{ Alphanumeric }, Rng };
 #[derive(Clone, Debug, Deserialize, Serialize)]
 enum Gender { Female, Male }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -20,26 +21,41 @@ struct Person {
     description: String
 }
 
+// a previously fried Person, password ungfortunately lost
+fn test_fried_bacon() -> Bacon {
+    let ukwn_fried_person = "{
+        \"data\": [
+            199989347279576730303273302831594482298,
+            89686176579382696547722799744440123650,
+            200571766683922312051532064628431861624,
+            272773095845529367494637394170706300494,
+            135123051543652942388160897815955354259,
+            241581523358705025852766085352301738865,
+            294742954104957886459273945034249829905,
+            170057818899735271015144833461180432525,
+            86971309882052014176151965736908291274
+        ]
+    }";
+    let person: Bacon = serde_json::from_str(ukwn_fried_person).unwrap();
+    person
+}
+
 // encrypts a struct using the speck algorithm and decrypts it back
-// $ cargo run --example bacon {16 character pass} 
-// TODO: $ cargo run --example bacon {16 character pass} '{ "name": "Rihanna Po Lanna", "age": 32, "gender": "Female", "address": "322 Park Ave, Olympus Mons, Mars".to_string() }'
+// $ cargo run --example bacon { optional 16 character pass } 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
-    let key = bacon::key_128(&args[1]);
-
-// a previously fried Person, password ungfortunately lost
-// Bacon {
-//     data: [
-//         248894775666274688630406846778229178656,
-//         11111065244041041936913214710176640135,
-//         98935423962589080736130325361634190843,
-//         13103328784798148131135224320768214135,
-//         97415904987455850552023041001375567129,
-//         325247580771718837179507735766775096367,
-//         97404749756795619086904136849412589904,
-//         82987549362421738383640827970438931211
-//     ]
-// }
+    let mut key_str: String = "".to_string();
+    if args.len() > 1 {
+        key_str = args[1].clone();
+    } else {
+        let mut rng = rand::thread_rng();
+        key_str = rng.sample_iter(&Alphanumeric).take(16).collect();
+    }
+    let key_128 =  bacon::key_128(&key_str);
+    dbg!(&key_str);
+    dbg!(key_128);
+    key_str = "".to_string();
+    drop(args); drop(key_str);
 
     // create struct
     println!("Creating a struct");
@@ -54,26 +70,39 @@ fn main() {
     println!();
 
     // fry struct
-    let fried_bacon: Bacon = fry!(vip, key);
+    let fried_bacon: Bacon = fry!(vip, key_128);
     println!("Encrypted struct \"Fried Bacon\"");
     dbg!(&fried_bacon);
     println!();
+
+    // decrypt attempt with correct key
+    println!("Attempt to decrypt with correct key.");
+    let mut fried_clone = fried_bacon.clone();
+    match unfry!(fried_clone, Person, key_128) {
+        Ok(p) => { dbg!(p); },
+        Err(e) => { dbg!(e); }
+    }
 
     // decrypt attempt with wrong key
     println!("Attempt to decrypt with wrong key.");
     let mut rng = rand::thread_rng();
     let wrong_key = rng.gen_range(u128::min_value(), u128::max_value());
-    let fried_clone = fried_bacon.clone();
+    fried_clone = fried_bacon.clone();
     match unfry!(fried_clone, Person, wrong_key) {
         Ok(p) => { dbg!(p); },
         Err(e) => { dbg!(e); }
     }
     println!();
-
-    // decrypt attempt with correct key
-    println!("Attempt to decrypt with correct key.");
-    match unfry!(fried_bacon, Person, key) {
-        Ok(p) => { dbg!(p); },
-        Err(e) => { dbg!(e); }
+   
+    // attempt to brute force key
+    println!("Attempt to brute force key.");
+    let p = test_fried_bacon();
+    fried_clone = p.clone();
+    for key in 0..u128::max_value() {
+        match unfry!(fried_clone, Person, key) {
+            Ok(p) => { dbg!(p); },
+            Err(e) => { /* print!(".");*/ }
+        }
+        fried_clone = p.clone();
     }
 }
