@@ -8,6 +8,17 @@ extern crate speck;
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Bacon { pub data: Vec<u128> }
 
+/// returns a u128 from a 16 character str
+pub fn key_128(pass: &str) -> u128 {
+    let mut x:  [u8; 16] = [0; 16];
+    let mut count = 0;
+    for byte in pass.as_bytes() {
+        x[count] = *byte;
+        count += 1;
+    }
+    u128::from_be_bytes(x)
+}
+
 #[macro_export]
 macro_rules! fry {
     ($item:ident, $key:ident) => {
