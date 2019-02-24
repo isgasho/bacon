@@ -43,6 +43,7 @@ fn test_fried_bacon() -> Bacon {
 // encrypts a struct using the speck algorithm and decrypts it back
 // $ cargo run --example bacon { optional 16 character pass } 
 fn main() {
+    // key
     let args: Vec<String> = std::env::args().collect();
     let mut key_str: String = "".to_string();
     if args.len() > 1 {
@@ -92,17 +93,5 @@ fn main() {
         Ok(p) => { dbg!(p); },
         Err(e) => { dbg!(e); }
     }
-    println!();
-   
-    // attempt to brute force key
-    println!("Attempt to brute force key.");
-    let p = test_fried_bacon();
-    fried_clone = p.clone();
-    for key in 0..u128::max_value() {
-        match unfry!(fried_clone, Person, key) {
-            Ok(p) => { dbg!(p); },
-            Err(e) => { /* print!(".");*/ }
-        }
-        fried_clone = p.clone();
-    }
+    println!(); 
 }
