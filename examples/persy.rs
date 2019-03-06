@@ -77,7 +77,7 @@ impl DB {
 }
 
 // encrypts a struct using the speck algorithm and decrypts it back
-// $ cargo run --example persy { optional 16 character pass } 
+// $ cargo run --example persy { persy_storage_file } { optional 16 character pass } 
 fn main() {
     // key
     let args: Vec<String> = std::env::args().collect();
