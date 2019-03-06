@@ -1,4 +1,3 @@
-#![recursion_limit="512"]
 #[forbid(unsafe_code)]
 #[macro_use]
 extern crate bacon;
@@ -8,8 +7,9 @@ extern crate serde;
 extern crate serde_derive;
 extern crate serde_json;
 
-use bacon::Bacon;
+use bacon::{ Bacon, Key };
 use rand::{ distributions::{ Alphanumeric }, Rng };
+
 #[derive(Clone, Debug, Deserialize, Serialize)]
 enum Gender { Female, Male }
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -48,16 +48,15 @@ fn main() {
     let mut key_str: String = "".to_string();
     if args.len() > 1 {
         key_str = args[1].clone();
+        drop(args);
     } else {
         let mut rng = rand::thread_rng();
         key_str = rng.sample_iter(&Alphanumeric).take(16).collect();
     }
     let key_128 =  bacon::key_128(&key_str);
-    dbg!(&key_str);
-    dbg!(key_128);
     key_str = "".to_string();
-    drop(args); drop(key_str);
-
+    drop(key_str);
+    
     // create struct
     println!("Creating a struct");
     let vip = Person {
@@ -83,6 +82,7 @@ fn main() {
         Ok(p) => { dbg!(p); },
         Err(e) => { dbg!(e); }
     }
+    println!();
 
     // decrypt attempt with wrong key
     println!("Attempt to decrypt with wrong key.");

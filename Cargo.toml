@@ -6,7 +6,8 @@ edition = "2018"
 
 [dependencies]
 bincode = "*"
+persy = "0.4.0"
 serde = "*"
 serde_derive = "*"
-speck = "1.1.0"
+serde_json = "*"
 rand = "*"

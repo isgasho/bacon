@@ -53,7 +53,7 @@ fn main() {
     println!("Creating a struct");
 
     let my = Person {
-        name: "Sophia Pia ".to_string(),
+        name: "Sophia Pia Du Hamel".to_string(),
         age: 23,
         gender: Gender::Female,
         address: "7 Park Avenue, Olympus Mons, Mars".to_string()
