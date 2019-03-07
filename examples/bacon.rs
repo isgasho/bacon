@@ -7,9 +7,7 @@ extern crate serde;
 extern crate serde_derive;
 extern crate serde_json;
 
-#[macro_use]
-use bacon::speck;
-use bacon::{ Bacon };
+use bacon::{ Bacon, speck };
 use rand::{ distributions::{ Alphanumeric }, Rng };
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -55,7 +53,7 @@ fn main() {
         let mut rng = rand::thread_rng();
         key_str = rng.sample_iter(&Alphanumeric).take(16).collect();
     }
-    let key_128 =  bacon::key_128(&key_str);
+    let key_128 = bacon::key_128(&key_str);
     key_str = "".to_string();
     drop(key_str);
     

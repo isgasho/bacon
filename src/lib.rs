@@ -4,11 +4,25 @@ extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 
-
 pub mod speck;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Bacon { pub data: Vec<u128> }
+
+pub trait Encrypt { fn fry<T: serde::Serialize>(source: T, key: u128) -> Bacon; }
+pub trait Decrypt { fn unfry<'de, T: serde::Deserialize<'de>>(bacon: Bacon, target: T, key: u128) -> bincode::Result<T>; }
+
+impl Encrypt for Bacon {
+    fn fry<T: serde::Serialize>(source: T, key: u128) -> Bacon {
+        fry!(source, key)
+    }
+}
+
+impl Decrypt for Bacon {
+    fn unfry<'de, T: serde::Deserialize<'de>>(bacon: Bacon, T: T, key: u128) -> bincode::Result<T> {
+        unfry!(bacon, T, key)
+    }
+}
 
 /// returns a u128 from a 16 character str
 pub fn key_128(pass: &str) -> u128 {

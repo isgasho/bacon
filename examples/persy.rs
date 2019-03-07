@@ -9,12 +9,9 @@ extern crate serde;
 extern crate serde_derive;
 extern crate serde_json;
 
-#[macro_use]
-use bacon::speck;
-use bacon::{ Bacon };
-
+use bacon::{ Bacon, speck };
 use bincode::{serialize, deserialize};
-use persy::{ Config, Persy, PersyId, PersyError, PRes };
+use persy::{ Config, Persy, PersyId, PersyError };
 use rand::{ distributions::{ Alphanumeric }, Rng };
 use std::fmt::Debug;
 
@@ -86,8 +83,7 @@ fn main() {
     let args: Vec<String> = std::env::args().collect();
 
     let mut key_str: String = String::new();
-    let mut path: String = String::new();
-    path = args[1].clone();
+    let path: String = args[1].clone();
     dbg!(&args[1]);
     if args.len() > 2 {
         key_str = args[2].clone();
@@ -100,7 +96,7 @@ fn main() {
     key_str = "".to_string();
     drop(key_str);
     
-    // create struct
+// create struct
     println!("Creating a struct");
     let mut vip = Person {
         name: "Ernst Stavro Blofeld".to_string(),
@@ -110,14 +106,14 @@ fn main() {
         description: "CEO of SPECKTRE aka Bacon Industries".to_string()
     };
     dbg!(&vip);
-    // fry struct
+// fry struct
     println!("Fry a struct");
     let fried_bacon: Bacon = fry!(vip, key_128);
     dbg!(&fried_bacon);
     vip = Person::empty();
     drop(vip);
 
-    // persist bacon
+// persist bacon
     // open or create and open persy storage
     println!("Trying to open: {:?}", path);
     let persy = DB::open(path).unwrap();
@@ -125,12 +121,12 @@ fn main() {
     match DB::write(&persy, &serialize(&fried_bacon).unwrap()) {
         Ok(id) => {
             drop(fried_bacon);
-            // read persyfied bacon
+        // read persyfied bacon
             println!("Ready persyfied bacon");
             let read = DB::read(&persy, id);
             println!("Persified bacon read.");
             dbg!(&read);
-            // deserialize into encrypted Bacon
+        // deserialize into encrypted Bacon
             println!("Deserializing bacon");
             let bacon: Bacon = deserialize(&read.unwrap()).unwrap();
             println!("Bacon deserialized");
@@ -143,13 +139,4 @@ fn main() {
         },
         Err(e) => { dbg!(e); }
     }
-    
-
- 
-    // load fried bacon from persy.storage
-     
-    // decrypt attempt with correct key
-   
-
-    // println!();
 }
