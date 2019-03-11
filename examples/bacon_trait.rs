@@ -10,7 +10,7 @@ extern crate serde;
 extern crate serde_derive;
 extern crate serde_json;
 
-use bacon::{ Bacon, Encrypt };
+use bacon::{ Bacon, Fry };
 use rand::{ distributions::{ Alphanumeric }, Rng };
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

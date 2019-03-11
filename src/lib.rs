@@ -3,11 +3,21 @@ extern crate bincode;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
-
+use serde::Serialize;
 pub mod speck;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Bacon { pub data: Vec<u128> }
+pub trait Fry { fn fry<T: Serialize>(source: T, key: u128) -> Bacon; }
+pub trait Unfry { }
+
+
+impl Fry for Bacon {
+    fn fry<T: Serialize>(source: T, key: u128) -> Bacon {
+        fry!(source, key)
+    }
+}
+
 
 /// returns a u128 from a 16 character str
 pub fn key_128(pass: &str) -> u128 {
