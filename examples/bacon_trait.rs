@@ -1,5 +1,4 @@
 #[forbid(unsafe_code)]
-#[macro_use]
 extern crate bacon;
 extern crate rand;
 extern crate serde;
