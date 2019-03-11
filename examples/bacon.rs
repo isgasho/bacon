@@ -21,7 +21,7 @@ struct Person {
     description: String
 }
 
-/* a previously fried Person, password ungfortunately lost
+/* a previously fried Person, password unfortunately lost
     fn test_fried_bacon() -> Bacon {
         let ukwn_fried_person = "{
             \"data\": [
