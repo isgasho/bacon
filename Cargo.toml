@@ -5,7 +5,7 @@ authors = ["aspera-non-spernit <g.s.d>"]
 edition = "2018"
 
 [dependencies]
-bincode = "*"
+bincode = "1.1.2"
 persy = "0.4.0"
 serde = "*"
 serde_derive = "*"
