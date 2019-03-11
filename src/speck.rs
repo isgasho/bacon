@@ -34,6 +34,8 @@ macro_rules! inv_round {
     }
 }
 
+/* should not be used with bacon
+
 /// Encrypt a block with key schedule generated on-the-go.
 ///
 /// This works great for one-time use of a key (such as usages other than encryption), because it
@@ -60,6 +62,7 @@ pub fn encrypt_block(m: u128, k: u128) -> u128 {
 
     u128::from(m2) | u128::from(m1) << 64
 }
+*/
 
 /// A precomputed key.
 ///
