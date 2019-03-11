@@ -45,17 +45,16 @@ struct Person {
 fn main() {
     // key
     let args: Vec<String> = std::env::args().collect();
-    let mut key_str: String = "".to_string();
-    if args.len() > 1 {
-        key_str = args[1].clone();
-        drop(args);
+    let mut key_str = if args.len() > 1 {
+        args[1].clone()
     } else {
         let mut rng = rand::thread_rng();
-        key_str = rng.sample_iter(&Alphanumeric).take(16).collect();
-    }
+        rng.sample_iter(&Alphanumeric).take(16).collect()
+    };
+    drop(args);
     let key_128 = bacon::key_128(&key_str);
-    key_str = "".to_string();
-    drop(key_str);
+    key_str = "".to_string();               // emptying and
+    drop(key_str);                          // dropping key
     
     // create struct
     println!("Creating a struct");
