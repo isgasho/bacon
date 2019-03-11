@@ -1,4 +1,4 @@
-#[forbid(unsafe_code)]
+#![forbid(unsafe_code)]
 extern crate bincode;
 extern crate serde;
 #[macro_use]
@@ -9,28 +9,11 @@ pub mod speck;
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Bacon { pub data: Vec<u128> }
 
-pub trait Encrypt { fn fry<T: serde::Serialize>(source: T, key: u128) -> Bacon; }
-pub trait Decrypt { fn unfry<'de, T: serde::Deserialize<'de>>(bacon: Bacon, target: T, key: u128) -> bincode::Result<T>; }
-
-impl Encrypt for Bacon {
-    fn fry<T: serde::Serialize>(source: T, key: u128) -> Bacon {
-        fry!(source, key)
-    }
-}
-
-impl Decrypt for Bacon {
-    fn unfry<'de, T: serde::Deserialize<'de>>(bacon: Bacon, T: T, key: u128) -> bincode::Result<T> {
-        unfry!(bacon, T, key)
-    }
-}
-
 /// returns a u128 from a 16 character str
 pub fn key_128(pass: &str) -> u128 {
     let mut x:  [u8; 16] = [0; 16];
-    let mut count = 0;
-    for byte in pass.as_bytes() {
+     for (count, byte) in pass.as_bytes().iter().enumerate() {
         x[count] = *byte;
-        count += 1;
     }
     u128::from_be_bytes(x)
 }
@@ -45,7 +28,7 @@ macro_rules! fry {
             drop($item);
             let mut data: Vec<u128> = vec![];
             let mut x:  [u8; 16] =  [0; 16];
-            for (i, chunk) in chunks.enumerate() {
+            for chunk in chunks {
                 let mut count = 0;
                 for byte in chunk.clone() {
                     x[count] = *byte;
@@ -58,19 +41,18 @@ macro_rules! fry {
     }
 }
 
-/// decrypts a with fry! encrypted item and deserializes into given type
 #[macro_export]
 macro_rules! unfry {
-    ($fried_bacon:ident, $struct:ty, $key:ident) => {
+    ($fried_bacon:ident, $target:ty, $key:ident) => {
         {
             let key = speck::Key::new($key);
             let mut decr_bytes: Vec<u8> = vec![];
             for chunk in $fried_bacon.data {
                 for byte in u128::to_be_bytes(key.decrypt_block(chunk)).iter() {
                     decr_bytes.push(*byte);
-                }       
-            } 
-            let decr: bincode::Result<$struct> = bincode::deserialize(&decr_bytes);
+                }    
+            }  
+            let decr: bincode::Result<$target> = bincode::deserialize(&decr_bytes);
             decr
         }
     }
