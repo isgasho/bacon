@@ -1,6 +1,3 @@
-/// currently unused
-
-
 #[forbid(unsafe_code)]
 #[macro_use]
 extern crate bacon;
@@ -10,11 +7,11 @@ extern crate serde;
 extern crate serde_derive;
 extern crate serde_json;
 
-use bacon::{ Bacon, Fry };
+use bacon::{ Bacon, Fry, Unfry };
 use rand::{ distributions::{ Alphanumeric }, Rng };
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-enum Gender { Female, Male }
+enum Gender { Female, Male, Undefined }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 struct Person {
     name: String,
@@ -24,6 +21,17 @@ struct Person {
     description: String
 }
 
+impl Person {
+    fn new() -> Person {
+        Person {
+            name: String::new(),
+            age: 0,
+            gender: Gender::Undefined,
+            address: String::new(),
+            description: String::new()
+        }
+    }
+}
 // encrypts a struct using the speck algorithm and decrypts it back
 // $ cargo run --example bacon { optional 16 character pass } 
 fn main() {
@@ -55,5 +63,11 @@ fn main() {
 
     // fry struct
     let bacon: Bacon = Bacon::fry(vip, key_128);
-    dbg!(bacon);
+    dbg!(&bacon);
+    println!();
+    // unfry -- not a good solution
+    let mut person = Person::new();
+    person = Bacon::unfry(bacon, person, key_128).unwrap();
+    dbg!(person);
+
 }
