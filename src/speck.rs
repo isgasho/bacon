@@ -1,3 +1,4 @@
+#![forbid(unsafe_code)]
 // forked from https://docs.rs/crate/speck/1.1.0/source/src/lib.rs
 
 //! Implementation of the SPECK block cipher.
@@ -5,8 +6,6 @@
 //! SPECK is a really simple block cipher designed by the NSA. It is famous for its simple
 //! structure and code size, which can fit in just a couple of lines, while still preserving
 //! security.
-
-#![forbid(unsafe_code)]
 
 /// The number of rounds.
 const ROUNDS: u64 = 32;
@@ -59,7 +58,7 @@ pub fn encrypt_block(m: u128, k: u128) -> u128 {
         round!(m1, m2, k2);
     }
 
-    m2 as u128 | (m1 as u128) << 64
+    u128::from(m2) | u128::from(m1) << 64
 }
 
 /// A precomputed key.
@@ -107,7 +106,7 @@ impl Key {
             round!(m1, m2, k);
         }
 
-        m2 as u128 | (m1 as u128) << 64
+        u128::from(m2) | u128::from(m1) << 64
     }
 
     /// Decrypt a 128-bit block with this key.
@@ -121,7 +120,7 @@ impl Key {
             inv_round!(c1, c2, k);
         }
 
-        c2 as u128 | (c1 as u128) << 64
+        u128::from(c2) | u128::from(c1) << 64
     }
 }
 
