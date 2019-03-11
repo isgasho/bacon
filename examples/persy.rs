@@ -70,7 +70,7 @@ impl DB {
         let mut tx = persy.begin()?;
         let id = persy.insert_record(&mut tx, "default", data)?;
         let prepared = persy.prepare_commit(tx)?;
-        persy.commit(prepared);
+        persy.commit(prepared)?;
         dbg!(&id);
         Ok(id)
     }
@@ -81,17 +81,14 @@ impl DB {
 fn main() {
     // key
     let args: Vec<String> = std::env::args().collect();
-
-    let mut key_str: String = String::new();
     let path: String = args[1].clone();
-    dbg!(&args[1]);
-    if args.len() > 2 {
-        key_str = args[2].clone();
-        drop(args);
+    let mut key_str = if args.len() > 2 {
+        args[2].clone()
     } else {
         let mut rng = rand::thread_rng();
-        key_str = rng.sample_iter(&Alphanumeric).take(16).collect();
-    }
+        rng.sample_iter(&Alphanumeric).take(16).collect()
+    };
+    drop(args);
     let key_128 =  bacon::key_128(&key_str);
     key_str = "".to_string();
     drop(key_str);
