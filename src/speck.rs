@@ -8,6 +8,11 @@
 //! security.
 
 /// The number of rounds.
+/// 
+
+use crate::Cipher;
+
+
 const ROUNDS: u64 = 32;
 
 /// A single round of SPECK.
@@ -34,41 +39,12 @@ macro_rules! inv_round {
     }
 }
 
-/* should not be used with bacon
-
-/// Encrypt a block with key schedule generated on-the-go.
-///
-/// This works great for one-time use of a key (such as usages other than encryption), because it
-/// should never read from memory (both the message and the keys are stored in the registers). As
-/// such, this should be really fast for such usage.
-///
-/// If you want to reuse the key, however, it is recommended that you use the precomputed schedule
-/// provided by the `Key` struct.
-pub fn encrypt_block(m: u128, k: u128) -> u128 {
-    let mut m1 = (m >> 64) as u64;
-    let mut m2 = m as u64;
-    let mut k1 = (k >> 64) as u64;
-    let mut k2 = k as u64;
-
-    // Run the initial round (similar to the loop below, but doesn't update the key schedule).
-    round!(m1, m2, k2);
-
-    for i in 0..ROUNDS - 1 {
-        // Progress the key schedule.
-        round!(k1, k2, i);
-        // Run a round over the message.
-        round!(m1, m2, k2);
-    }
-
-    u128::from(m2) | u128::from(m1) << 64
-}
-*/
 
 /// A precomputed key.
 ///
 /// This precomputes a key schedule, which can then be used for both encrypting and decrypting
 /// messages.
-pub struct Key {
+pub struct Speck {
     /// The computed schedule.
     ///
     /// Each of these subkeys are used in a round of the cipher. The first subkey is used in the
@@ -76,13 +52,13 @@ pub struct Key {
     schedule: [u64; ROUNDS as usize],
 }
 
-impl Key {
+impl Speck {
     /// Generate a new key from some seed.
-    pub fn new(k: u128) -> Key {
+    pub fn new(k: u128) -> Speck {
         let mut k1 = (k >> 64) as u64;
         let mut k2 = k as u64;
 
-        let mut ret = Key {
+        let mut ret = Speck {
             schedule: [0; ROUNDS as usize],
         };
 
@@ -127,6 +103,8 @@ impl Key {
     }
 }
 
+
+impl Cipher for Speck {}
 /*
 #[cfg(test)]
 mod tests {
@@ -158,5 +136,35 @@ mod tests {
             0xa65d9851797832657860fedf5c570d18
         );
     }
+}
+*/
+
+/* should not be used with bacon
+
+/// Encrypt a block with key schedule generated on-the-go.
+///
+/// This works great for one-time use of a key (such as usages other than encryption), because it
+/// should never read from memory (both the message and the keys are stored in the registers). As
+/// such, this should be really fast for such usage.
+///
+/// If you want to reuse the key, however, it is recommended that you use the precomputed schedule
+/// provided by the `Key` struct.
+pub fn encrypt_block(m: u128, k: u128) -> u128 {
+    let mut m1 = (m >> 64) as u64;
+    let mut m2 = m as u64;
+    let mut k1 = (k >> 64) as u64;
+    let mut k2 = k as u64;
+
+    // Run the initial round (similar to the loop below, but doesn't update the key schedule).
+    round!(m1, m2, k2);
+
+    for i in 0..ROUNDS - 1 {
+        // Progress the key schedule.
+        round!(k1, k2, i);
+        // Run a round over the message.
+        round!(m1, m2, k2);
+    }
+
+    u128::from(m2) | u128::from(m1) << 64
 }
 */

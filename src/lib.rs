@@ -8,21 +8,19 @@ pub mod speck;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Bacon { pub data: Vec<u128> }
+pub trait Cipher {}  // to be implemented by Speck, ChaCha etc
 pub trait Fry { fn fry<T: Serialize>(source: T, key: u128) -> Bacon; }
 pub trait Unfry { fn unfry<U: Cipher, T: for<'de> Deserialize<'de>>(bacon: Bacon, key: u128) -> bincode::Result<T>; }
+
 
 // currently used to 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Fryable { data: Vec<String> }
 
 impl From<Vec<String>> for Fryable {
-    fn from(data:  Vec<String>) -> Self {
-        Fryable { data }
-    }
+    fn from(data:  Vec<String>) -> Self { Fryable { data } }
 }
-pub struct Speck;
-pub trait Cipher {}
-impl Cipher for Speck {}
+
 
 impl Fry for Bacon {
     fn fry<T: Serialize>(source: T, key: u128) -> Bacon {
@@ -49,7 +47,7 @@ pub fn key_128(pass: &str) -> u128 {
 macro_rules! fry {
     ($item:ident, $key:ident) => {
         {
-            let key = speck::Key::new($key);
+            let key = speck::Speck::new($key);
             let byte_doc = bincode::serialize(&$item).unwrap();
             let chunks = byte_doc.chunks(16);
             drop($item);
@@ -72,7 +70,7 @@ macro_rules! fry {
 macro_rules! unfry {
     ($fried_bacon:ident, $target:ty, $key:ident) => {
         {
-            let key = speck::Key::new($key);
+            let key = speck::Speck::new($key);
             let mut decr_bytes: Vec<u8> = vec![];
             for chunk in $fried_bacon.data {
                 for byte in u128::to_be_bytes(key.decrypt_block(chunk)).iter() {
