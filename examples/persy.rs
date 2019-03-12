@@ -1,14 +1,12 @@
 #[forbid(unsafe_code)]
-#[macro_use]
-extern crate bacon;
+#[macro_use] extern crate bacon;
 extern crate bincode;
 extern crate rand;
 extern crate persy;
 extern crate serde;
-#[macro_use]
-extern crate serde_derive;
+#[macro_use] extern crate serde_derive;
+use bacon::{ Bacon, ciphers::speck::Speck };
 
-use bacon::{ Bacon, ciphers };
 use bincode::{serialize, deserialize};
 use persy::{ Config, Persy, PersyId, PersyError };
 use rand::{ distributions::{ Alphanumeric }, Rng };
