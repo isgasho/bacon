@@ -47,7 +47,7 @@ struct Challenge {
 
 3. The way I fried the secret message of the Challenge.
 
-The secret key is obviously *"lost"*. The original key was a 16 digit string of a-z A-Z 0-0 and special characters you find on any keyboard. No language specific characters are used. (ie. no ä è ß etc.), but could contain characters of Shift+1-0 or ,.-;:_+#*'. No return, newline, break characters are used. 
+The secret key is obviously *"lost"*. The original key was a 16 digit string of a-z A-Z 0-9 and special characters you find on any keyboard. No language specific characters are used. (ie. no ä è ß etc.), but could contain characters of Shift+1-0 or ,.-;:_+#*'. No return, newline, break characters are used. 
 
 ```rust
 // create fryable message
