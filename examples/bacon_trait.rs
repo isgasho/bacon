@@ -6,7 +6,7 @@ extern crate serde;
 extern crate serde_derive;
 extern crate serde_json;
 
-use bacon::{ Bacon, Fry, Unfry };
+use bacon::{ Bacon, Fry, Speck, Unfry };
 use rand::{ distributions::{ Alphanumeric }, Rng };
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -21,7 +21,7 @@ struct Person {
     description: String
 }
 
-// encrypts a struct using the speck algorithm and decrypts it back
+// encrypts a struct using the speck algorithm and decrypts it back using Bacon::fry and Bacon::<T>::unfry
 // $ cargo run --example bacon { optional 16 character pass } 
 fn main() {
     // key from cli args
@@ -50,10 +50,9 @@ fn main() {
     println!();
 
     // fry struct
-    let bacon: Bacon = Bacon::fry(vip, key_128);
- //   let bacon = vip.fry();
+    let bacon = Bacon::fry(vip, key_128);
     dbg!(&bacon);
     println!();
-    let p = Bacon::unfry::<Person>(bacon, key_128).unwrap();
+    let p = Bacon::unfry::<Speck, Person>(bacon, key_128).unwrap();
     dbg!(p);
 }

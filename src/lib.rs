@@ -9,7 +9,11 @@ pub mod speck;
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Bacon { pub data: Vec<u128> }
 pub trait Fry { fn fry<T: Serialize>(source: T, key: u128) -> Bacon; }
-pub trait Unfry { fn unfry<T: for<'de> Deserialize<'de>>(bacon: Bacon, key: u128) -> bincode::Result<T>; }
+pub trait Unfry { fn unfry<U: Cipher, T: for<'de> Deserialize<'de>>(bacon: Bacon, key: u128) -> bincode::Result<T>; }
+
+pub struct Speck;
+pub trait Cipher {}
+impl Cipher for Speck {}
 
 impl Fry for Bacon {
     fn fry<T: Serialize>(source: T, key: u128) -> Bacon {
@@ -18,7 +22,7 @@ impl Fry for Bacon {
 }
 
 impl Unfry for Bacon {
-    fn unfry<T: for<'de> Deserialize<'de>>(bacon: Bacon, key: u128) -> bincode::Result<T> {
+    fn unfry<U: Cipher, T: for<'de> Deserialize<'de>>(bacon: Bacon, key: u128) -> bincode::Result<T> {
         unfry!(bacon, T, key)
     }
 }
