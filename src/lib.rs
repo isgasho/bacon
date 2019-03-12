@@ -4,7 +4,7 @@ extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 use serde::{ Deserialize, Serialize };
-pub mod speck;
+pub mod ciphers;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Bacon { pub data: Vec<u128> }
@@ -47,7 +47,7 @@ pub fn key_128(pass: &str) -> u128 {
 macro_rules! fry {
     ($item:ident, $key:ident) => {
         {
-            let key = speck::Speck::new($key);
+            let key = ciphers::Speck::new($key);
             let byte_doc = bincode::serialize(&$item).unwrap();
             let chunks = byte_doc.chunks(16);
             drop($item);
@@ -70,7 +70,7 @@ macro_rules! fry {
 macro_rules! unfry {
     ($fried_bacon:ident, $target:ty, $key:ident) => {
         {
-            let key = speck::Speck::new($key);
+            let key = ciphers::Speck::new($key);
             let mut decr_bytes: Vec<u8> = vec![];
             for chunk in $fried_bacon.data {
                 for byte in u128::to_be_bytes(key.decrypt_block(chunk)).iter() {

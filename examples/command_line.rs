@@ -1,7 +1,7 @@
 #[forbid(unsafe_code)]
 extern crate bacon;
 
-use bacon::{ Bacon, Fry, Fryable, Unfry, speck::Speck }; // a generic wrapper 
+use bacon::{ Bacon, Fry, Fryable, Unfry, ciphers::Speck }; // a generic wrapper 
 /// $ cargo run --example command_line {mandatory secret_key} ["messages"]
 /// Example: cargo run --example command_line jh7dhezsgh56,.kL "This is a secret message" "This is some payload"
 fn main() {

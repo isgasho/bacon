@@ -7,16 +7,11 @@
 //! structure and code size, which can fit in just a couple of lines, while still preserving
 //! security.
 
-/// The number of rounds.
-/// 
-
 use crate::Cipher;
-
 
 const ROUNDS: u64 = 32;
 
 /// A single round of SPECK.
-///
 /// This is a keyed ARX transformation.
 macro_rules! round {
     ($x:ident, $y:ident, $k:ident) => {
@@ -39,18 +34,7 @@ macro_rules! inv_round {
     }
 }
 
-
-/// A precomputed key.
-///
-/// This precomputes a key schedule, which can then be used for both encrypting and decrypting
-/// messages.
-pub struct Speck {
-    /// The computed schedule.
-    ///
-    /// Each of these subkeys are used in a round of the cipher. The first subkey is used in the
-    /// first round of the cipher and so on.
-    schedule: [u64; ROUNDS as usize],
-}
+pub struct Speck { schedule: [u64; ROUNDS as usize], }
 
 impl Speck {
     /// Generate a new key from some seed.

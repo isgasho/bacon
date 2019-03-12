@@ -8,7 +8,7 @@ extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 
-use bacon::{ Bacon, speck };
+use bacon::{ Bacon, ciphers };
 use bincode::{serialize, deserialize};
 use persy::{ Config, Persy, PersyId, PersyError };
 use rand::{ distributions::{ Alphanumeric }, Rng };
