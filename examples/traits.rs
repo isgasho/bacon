@@ -9,10 +9,10 @@ extern crate serde_json;
 use bacon::{ Bacon, Fry, Speck, Unfry };
 use rand::{ distributions::{ Alphanumeric }, Rng };
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 enum Gender { Female, Male, Undefined }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 struct Person {
     name: String,
     age: u8,
