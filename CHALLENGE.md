@@ -72,3 +72,25 @@ let challenge = Challenge {
 let secret_fryable: Fryable = Bacon::unfry::<Speck, Fryable>(challenge.secret_message, {THE_BRUTE_FORCED_KEY as u128} ).unwrap();
 ```
     
+5. I have provided an example code snippet which allows you to decrypt the message, if you have found the correct key.
+
+You can run the example from the command line:
+
+```rust
+// $ cargo run --example challenge {16-digit-key}
+// Example: cargo run --example challenge u.ijd.3HH8$n.MhK
+```
+
+If the provided key is wrong you will receive an error message:
+
+```rust
+[examples/challenge.rs:28] e = Io(
+    Custom {
+        kind: UnexpectedEof,
+        error: StringError(
+            ""
+        )
+    }
+)
+
+```
