@@ -11,6 +11,7 @@ use rand::{ distributions::{ Alphanumeric }, Rng };
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 enum Gender { Female, Male, Undefined }
+
 #[derive(Clone, Debug, Deserialize, Serialize)]
 struct Person {
     name: String,
@@ -20,21 +21,10 @@ struct Person {
     description: String
 }
 
-impl Person {
-    fn new() -> Person {
-        Person {
-            name: String::new(),
-            age: 0,
-            gender: Gender::Undefined,
-            address: String::new(),
-            description: String::new()
-        }
-    }
-}
 // encrypts a struct using the speck algorithm and decrypts it back
 // $ cargo run --example bacon { optional 16 character pass } 
 fn main() {
-    // key
+    // key from cli args
     let args: Vec<String> = std::env::args().collect();
     let mut key_str = if args.len() > 1 {
         args[1].clone()
@@ -61,11 +51,9 @@ fn main() {
 
     // fry struct
     let bacon: Bacon = Bacon::fry(vip, key_128);
+ //   let bacon = vip.fry();
     dbg!(&bacon);
     println!();
-    // unfry -- not a good solution
-    let mut person = Person::new();
-    person = Bacon::unfry(bacon, person, key_128).unwrap();
-    dbg!(person);
-
+    let p = Bacon::unfry::<Person>(bacon, key_128).unwrap();
+    dbg!(p);
 }
