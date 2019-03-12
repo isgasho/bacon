@@ -2,11 +2,13 @@
 
 Bacon makes it easy to en- and decrypt an arbitrary struct.
 
-The library is currently undert development, only supports the Speck Cipher is supported. 
+The library is currently under development, and currently only supports the Speck Cipher. 
 
 ## Usage
 
-Bacon allows you to fry (encrypt) and struct of your code. Bacon provides a ```struct Fryable``` that can stores a message in ```data: Vec<String> ``` (ths may change to allow generic data types).
+Bacon allows you to fry (encrypt) any struct of your code.
+
+The provided ```struct Fryable``` stores a String message in ```data: Vec<String> ``` (ths may change to allow generic data types).
 
 ### Fry Bacon from arbitrary concrete struct
 
@@ -21,7 +23,7 @@ Bacon allows you to fry (encrypt) and struct of your code. Bacon provides a ```s
 struct Person {
     name: String,
     age: u8,
-    gender: Gender,
+    gender: Gender,  // ommitted has to derive serde::Serialize too
     address: String
 }
 ```
@@ -53,11 +55,7 @@ struct Person {
 
 ### Unfry Bacon
 
-Unfrying a previously fried bacon works similarly.
-
-**Note**: There is currently no second Cipher available, yet you have to pass "Speck" that implements the trait bacon::Cipher, if you use
-
-```Bacon::unfry<T: Cipher, U:Deserialize>(fried_bacon, key_128)```
+Unfrying a previously fried bacon works similarly easy.
 
 1. Make sure the target type implements ```serde::Deserialize```
 
@@ -70,6 +68,10 @@ struct Person { .. }
 
 2.1. Using macro: ```unfry!```
 2.2. Using ```Bacon::unfry::<T: Cipher>()``
+
+**Note (only if you choose**: ```Bacon::unfry<T: Cipher, U:Deserialize>(fried_bacon, key_128)```.
+
+There is currently no second Cipher option available, yet you have to pass ```bacon::Speck``` which implements  ```bacon::Cipher```.
 
 *Examples*:
 
@@ -84,9 +86,9 @@ struct Person { .. }
 
 ### Fry Bacon from a generic (String) message
 
-**Note**: This may change in the future to allow to store generic Types in ```Fryable``` 
+**Note**: This may change in the future to generic payloads in ```Fryable```. Fryable is intended to store a payload of in a Vec<T>, that may include a Cipher declaration as well, to be send from to servers.
 
-THe provided ```struct bacon::Fryable```, which implements ```From<Vec<String>>```, can be used to fry String messages without having to declare a struct on your own. It is therefore suitable to be used for messages from the command line.
+The provided ```struct bacon::Fryable``` which implements ```From<Vec<String>>``` can be used to fry a number of String messages without having to declare a struct on your own. It is therefore suitable to be used for messages from the command line.
 
 1. Have a ```Vec<String>``` available
 2. Create a Fryable from Vec<String>
@@ -95,12 +97,13 @@ THe provided ```struct bacon::Fryable```, which implements ```From<Vec<String>>`
 *Example*:
 
 ```rust
+    // $ cargo run --example command_line kfdkelf:elfkj4ef "Cipher/Speck" "This is a secret message"
     fn main() {
         // key from cli args
         let  mut args: Vec<String> = std::env::args().collect();
         let key_128 = bacon::key_128(&args[1]);
         args.drain(0..2);  // that is the program name and secret
-        let fryable = Fryable::from(args);
+        let fryable = Fryable::from(args);  
         let bacon = Bacon::fry(fryable, key_128);
         let f = Bacon::unfry::<Speck, Fryable>(bacon, key_128).unwrap();
         dbg!(f);
