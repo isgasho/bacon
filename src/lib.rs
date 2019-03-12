@@ -12,7 +12,6 @@ pub trait Cipher {}  // to be implemented by Speck, ChaCha etc
 pub trait Fry { fn fry<T: Serialize>(source: T, key: u128) -> Bacon; }
 pub trait Unfry { fn unfry<U: Cipher, T: for<'de> Deserialize<'de>>(bacon: Bacon, key: u128) -> bincode::Result<T>; }
 
-
 // currently used to 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Fryable { data: Vec<String> }

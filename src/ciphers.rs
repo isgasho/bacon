@@ -87,7 +87,6 @@ impl Speck {
     }
 }
 
-
 impl Cipher for Speck {}
 /*
 #[cfg(test)]
