@@ -40,8 +40,9 @@ struct Person {
         person
     }
 */
-// encrypts a struct using the speck algorithm and decrypts it back using macros fry! and unfry!
-// $ cargo run --example bacon { optional 16 character pass } 
+
+/// encrypts a struct using the speck algorithm and decrypts it back using macros fry! and unfry!
+/// $ cargo run --example bacon { optional 16 character pass } 
 fn main() {
     // key
     let args: Vec<String> = std::env::args().collect();
