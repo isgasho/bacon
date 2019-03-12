@@ -146,7 +146,7 @@ dbg!(bank_account);
 If you have a struct BankAccount you may want to impl From for your BankAccount
 
 ```rust
-impl From<Fryable<String>> for BankAccount { ... }
+impl From<Fryable> for BankAccount { ... }
 ```
 
 **Note**: Keep in mind that currently you have to make sure the order of the Strings in the is correct, since
