@@ -13,6 +13,7 @@ struct Person {
     name: String,
     bank_account: Bacon,
 }
+
 fn main() {
     // key from cli args
     let args: Vec<String> = std::env::args().collect();

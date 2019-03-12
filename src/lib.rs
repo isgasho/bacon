@@ -1,4 +1,4 @@
-#![forbid(unsafe_code)]
+#[forbid(unsafe_code)]
 extern crate bincode;
 extern crate serde;
 #[macro_use]
@@ -20,7 +20,6 @@ pub struct Fryable { data: Vec<String> }
 impl From<Vec<String>> for Fryable {
     fn from(data:  Vec<String>) -> Self { Fryable { data } }
 }
-
 
 impl Fry for Bacon {
     fn fry<T: Serialize>(source: T, key: u128) -> Bacon {
