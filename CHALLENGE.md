@@ -37,7 +37,6 @@ Challenge {
 2. This is the ```struct Challenge```:
 
 ```rust
-#[derive(Debug)]
 struct Challenge {
     id: u8,
     description: String,
