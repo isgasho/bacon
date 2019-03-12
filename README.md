@@ -1,5 +1,6 @@
 ![Stage: dev](https://img.shields.io/badge/stage-dev-critical.svg "Stage:Development")
-![rust: nightly 1.35.0](https://img.shields.io/badge/rust-1.35.0--nightly%20f22dca0a1%202019--03--05-critical.svg "rustc 1.35.0-nightly (f22dca0a1 2019-03-05)")
+![rustc 1.33.0 (2aa4c46cf 2019-02-28)](https://img.shields.io/badge/rustc-stable%201.33.0%202aa4c46cf%202019--02--28-success.svg "rustc 1.33.0 (2aa4c46cf 2019-02-28)")
+
 # bacon
 
 Bacon makes it easy to en- and decrypt an arbitrary struct.
