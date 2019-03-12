@@ -112,3 +112,29 @@ The provided ```struct bacon::Fryable``` which implements ```From<Vec<String>>``
         dbg!(f);
     }
 ```
+
+## What else?
+
+The fryable can be used to partially encrypt a struct of your choice. 
+
+```rust
+struct Person {
+    id: u8,
+    name: String.
+    bank_account: Bacon  // encrypted bank account information
+}
+
+let fryable_bank_account = Fryable::from(
+    vec![
+        "First Moon Bank".to_string(),
+        "IPBAN: M01A123456789".to_string()
+    ]);
+// fry bank account and add it to p
+let fried_bank_account = Bacon::fry(fryable_bank_account, key_128);
+let p = Person {
+    id: 1234,
+    name: "Dr Blofeld".to_string(),
+    bank_account: fried_bank_account
+};
+dbg!(p);
+```
