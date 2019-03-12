@@ -9,15 +9,16 @@ pub mod speck;
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Bacon { pub data: Vec<u128> }
 pub trait Fry { fn fry<T: Serialize>(source: T, key: u128) -> Bacon; }
-pub trait Unfry { fn unfry<T: for<'de> Deserialize<'de>>(bacon: Bacon, _: T, key: u128) -> bincode::Result<T>; }
+pub trait Unfry { fn unfry<T: for<'de> Deserialize<'de>>(bacon: Bacon, key: u128) -> bincode::Result<T>; }
 
 impl Fry for Bacon {
     fn fry<T: Serialize>(source: T, key: u128) -> Bacon {
         fry!(source, key)
     }
 }
+
 impl Unfry for Bacon {
-    fn unfry<T: for<'de> Deserialize<'de>>(bacon: Bacon, _: T, key: u128) -> bincode::Result<T> {
+    fn unfry<T: for<'de> Deserialize<'de>>(bacon: Bacon, key: u128) -> bincode::Result<T> {
         unfry!(bacon, T, key)
     }
 }
@@ -70,3 +71,13 @@ macro_rules! unfry {
         }
     }
 }
+
+// macro_rules! impl_fry {
+//     ($t:ty) => {
+//         impl Fry for $t {
+//             fn fry<T: Serialize>(source: T, key: u128) -> Bacon {
+//                 fry!(source, key)
+//             }
+//         }
+//     }
+// }
