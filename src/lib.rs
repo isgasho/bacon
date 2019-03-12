@@ -12,11 +12,11 @@ pub trait Fry { fn fry<T: Serialize>(source: T, key: u128) -> Bacon; }
 pub trait Unfry { fn unfry<U: Cipher, T: for<'de> Deserialize<'de>>(bacon: Bacon, key: u128) -> bincode::Result<T>; }
 
 // currently used to 
-#[derive(Serialize)]
-pub struct Fryable<T> { data: Vec<T> }
+#[derive(Debug, Deserialize, Serialize)]
+pub struct Fryable { data: Vec<String> }
 
-impl <T>From<Vec<T>> for Fryable<T> {
-    fn from(data:  Vec<T>) -> Self {
+impl From<Vec<String>> for Fryable {
+    fn from(data:  Vec<String>) -> Self {
         Fryable { data }
     }
 }
