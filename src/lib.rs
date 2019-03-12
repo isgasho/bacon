@@ -84,13 +84,3 @@ macro_rules! unfry {
         }
     }
 }
-
-// macro_rules! impl_fry {
-//     ($t:ty) => {
-//         impl Fry for $t {
-//             fn fry<T: Serialize>(source: T, key: u128) -> Bacon {
-//                 fry!(source, key)
-//             }
-//         }
-//     }
-// }
