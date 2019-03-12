@@ -7,7 +7,6 @@ extern crate persy;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
-extern crate serde_json;
 
 use bacon::{ Bacon, speck };
 use bincode::{serialize, deserialize};
