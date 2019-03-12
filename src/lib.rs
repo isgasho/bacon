@@ -6,33 +6,38 @@ extern crate serde_derive;
 use serde::{ Deserialize, Serialize };
 pub mod ciphers;
 
+/// ```Bacon``` a wrapper for an encrxypted struct in form of a ```Vec<u128>```
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Bacon { pub data: Vec<u128> }
+/// Marker trait for Ciphers supported by Bacon
 pub trait Cipher {}  // to be implemented by Speck, ChaCha etc
+/// Provides methods to fry a struct. Returns a fried Bacon
 pub trait Fry { fn fry<T: Serialize>(source: T, key: u128) -> Bacon; }
+/// Provides methods to unfry a fried Bacon. Returns a bincode::Result<T>
 pub trait Unfry { fn unfry<U: Cipher, T: for<'de> Deserialize<'de>>(bacon: Bacon, key: u128) -> bincode::Result<T>; }
 
-// currently used to 
+/// A wrapper to support Fyring of Strings
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Fryable { data: Vec<String> }
 
+/// Preferred way of creating a Fryable
 impl From<Vec<String>> for Fryable {
     fn from(data:  Vec<String>) -> Self { Fryable { data } }
 }
-
+/// ```Bacon is the wrapper for all supported ciphers. It implements ```Fry``` and ```Unfry```.
 impl Fry for Bacon {
     fn fry<T: Serialize>(source: T, key: u128) -> Bacon {
         fry!(source, key)
     }
 }
-
+/// ```Bacon is the wrapper for all supported ciphers. It implements ```Fry``` and ```Unfry```.
 impl Unfry for Bacon {
     fn unfry<U: Cipher, T: for<'de> Deserialize<'de>>(bacon: Bacon, key: u128) -> bincode::Result<T> {
         unfry!(bacon, T, key)
     }
 }
 
-/// returns a u128 from a 16 character str
+/// Utility function to turn a ```&str``` into a u128. The max lengths considered are 16 characters.
 pub fn key_128(pass: &str) -> u128 {
     let mut x:  [u8; 16] = [0; 16];
      for (count, byte) in pass.as_bytes().iter().enumerate() {
@@ -40,7 +45,7 @@ pub fn key_128(pass: &str) -> u128 {
     }
     u128::from_be_bytes(x)
 }
-
+/// Macro to fry an arbitrary struct Does only support ```ciphers::Speck```
 #[macro_export]
 macro_rules! fry {
     ($item:ident, $key:ident) => {
@@ -64,6 +69,7 @@ macro_rules! fry {
     }
 }
 
+/// Macro to unfry an arbitrary struct. Does only support ```ciphers::Speck``` 
 #[macro_export]
 macro_rules! unfry {
     ($fried_bacon:ident, $target:ty, $key:ident) => {
