@@ -4,7 +4,6 @@ extern crate rand;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
-extern crate serde_json;
 
 use bacon::{ Bacon, Fry, Speck, Unfry };
 use rand::{ distributions::{ Alphanumeric }, Rng };
