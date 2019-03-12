@@ -5,7 +5,7 @@ extern crate rand;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
-extern crate serde_json;
+
 
 use bacon::{ Bacon, speck };  // speck to use macros fry! unfry!
 use rand::{ distributions::{ Alphanumeric }, Rng };
@@ -21,6 +21,7 @@ struct Person {
     description: String
 }
 
+// extern crate serde_json;
 /* a previously fried Person, password unfortunately lost
     fn test_fried_bacon() -> Bacon {
         let ukwn_fried_person = "{
