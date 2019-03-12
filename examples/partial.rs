@@ -35,6 +35,6 @@ fn main() {
 
     dbg!(&p);
     
-    // let f = Bacon::unfry::<Speck, Fryable>(bacon, key_128).unwrap();
-    // dbg!(f);
+    let bank_account = Bacon::unfry::<Speck, Fryable>(p.bank_account, key_128).unwrap();
+    dbg!(bank_account);
 }

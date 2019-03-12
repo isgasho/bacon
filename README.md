@@ -137,4 +137,17 @@ let p = Person {
     bank_account: fried_bank_account
 };
 dbg!(p);
+
+// unfrying the bank account
+let bank_account = Bacon::unfry::<Speck, Fryable>(p.bank_account, key_128).unwrap();
+dbg!(bank_account);
 ```
+
+If you have a struct BankAccount you may want to impl From for your BankAccount
+
+```rust
+impl From<Fryable<String>> for BankAccount { ... }
+```
+
+**Note**: Keep in mind that currently you have to make sure the order of the Strings in the is correct, since
+Fryable doesn't support a HashMap for the data field.
