@@ -11,6 +11,15 @@ pub struct Bacon { pub data: Vec<u128> }
 pub trait Fry { fn fry<T: Serialize>(source: T, key: u128) -> Bacon; }
 pub trait Unfry { fn unfry<U: Cipher, T: for<'de> Deserialize<'de>>(bacon: Bacon, key: u128) -> bincode::Result<T>; }
 
+// currently used to 
+#[derive(Serialize)]
+pub struct Fryable<T> { data: Vec<T> }
+
+impl <T>From<Vec<T>> for Fryable<T> {
+    fn from(data:  Vec<T>) -> Self {
+        Fryable { data }
+    }
+}
 pub struct Speck;
 pub trait Cipher {}
 impl Cipher for Speck {}
