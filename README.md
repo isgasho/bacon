@@ -44,8 +44,8 @@ struct Person {
 
 3. Choose a frying method from two available:
 
-3.1. Using the provided macro ```fry!``` 
-3.2. Using the function ```Bacon::fry```
+  3.1. Using the provided macro ```fry!``` 
+  3.2. Using the function ```Bacon::fry```
 
 *Examples*:
 
@@ -68,8 +68,8 @@ struct Person { .. }
 
 2. Unfry your bacon using one of two ways:
 
-2.1. Using macro: ```unfry!```
-2.2. Using ```Bacon::unfry::<T: Cipher>()``
+  2.1. Using macro: ```unfry!```
+  2.2. Using ```Bacon::unfry::<T: Cipher>()``
 
 **Note (only if you choose**: ```Bacon::unfry<T: Cipher, U:Deserialize>(fried_bacon, key_128)```.
 
