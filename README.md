@@ -1,87 +1,108 @@
 # bacon
 
-Provides two macros ```fry!``` and ```unfry!``` to serialize and encrypt arbitrary structs.
+Bacon makes it easy to en- and decrypt an arbitrary struct.
+
+The library is currently undert development, only supports the Speck Cipher is supported. 
 
 ## Usage
 
-### Fry Bacon
+Bacon allows you to fry (encrypt) and struct of your code. Bacon provides a ```struct Fryable``` that can stores a message in ```data: Vec<String> ``` (ths may change to allow generic data types).
 
-Encrypt an arbitrary struct
+### Fry Bacon from arbitrary concrete struct
 
-1. impl ```Deserialize``` and ```Serialize``` (crate serde) for your struct
-2. Create secret as u128
-3. Invoke ```fry!(my_struct, key)``` to encrypt your item
+1. ```impl serde::Serialize``` for your struct
 
-### Unfry Bacon
+**Note**: This may change in the future (ie. #[derive(Bacon)])
 
-Decrypt a Bacon object
-
-1. Invoke ```unfry!(encrypted_item, key)```  passing your bacon object and the key used to encrypt your struct
-
-
-### examples/main.rs
-
-This is the provided exmample:
+*Example*: 
 
 ```rust
-#[forbid(unsafe_code)]
-#[macro_use]
-extern crate bacon;
-extern crate rand;
-extern crate serde;
-#[macro_use]
-extern crate serde_derive;
-
-use bacon::Bacon;
-use rand::prelude::*;
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-enum Gender { Female, Male }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Serialize)] // a derive should work for most "simple" structs
 struct Person {
     name: String,
     age: u8,
     gender: Gender,
     address: String
 }
+```
 
-// encrypts a struct using the speck algorithm and decrypts it back
-fn main() {
-    let mut rng = rand::thread_rng();
-    let key = rng.gen_range(u128::min_value(), u128::max_value());
-    
-    println!("Creating a struct");
+2. Create a secret key of type ```u128```
 
-    let my = Person {
-        name: "Sophia Pia Du Hamel".to_string(),
-        age: 23,
-        gender: Gender::Female,
-        address: "7 Park Avenue, Olympus Mons, Mars".to_string()
+**Note**: Bacon provides a utility function to create a u128 from ```&str```
+
+*Examples*:
+
+```rust
+    let key_128: u128 = 1284736803748503;   // maybe not the best solution
+    // or
+    let key_128 = bacon::key_128(&args[1]); // a string secret from command line or any other source
+```
+
+3. Choose a frying method from two available:
+
+3.1. Using the provided macro ```fry!``` 
+3.2. Using the function ```Bacon::fry```
+
+*Examples*:
+
+```rust
+    fry!(vip, key_128);       // 3.1 where vip is of T:Serialize
+    // or
+    Bacon::fry(vip, key_128); // 3.2. where vip is of T:Serialize
+```
+
+### Unfry Bacon
+
+Unfrying a previously fried bacon works similarly.
+
+**Note**: There is currently no second Cipher available, yet you have to pass "Speck" that implements the trait bacon::Cipher, if you use
+
+```Bacon::unfry<T: Cipher, U:Deserialize>(fried_bacon, key_128)```
+
+1. Make sure the target type implements ```serde::Deserialize```
+
+```rust
+#[derive(Deserialize)] // a derive should work for most "simple" structs
+struct Person { .. }
+```
+
+2. Unfry your bacon using one of two ways:
+
+2.1. Using macro: ```unfry!```
+2.2. Using ```Bacon::unfry::<T: Cipher>()``
+
+*Examples*:
+
+```rust
+    match unfry!(bacon, Person, key_128) { // bincode::Result<T>
+        Ok(p) => { dbg!(p); },
+        Err(e) => { dbg!(e); }
     };
-    dbg!(&my);
-    println!();
+    // or
+    let p: Person = Bacon::unfry<Speck, Person>(bacon, key_128).unwrap() // bincode::Result<T>
+```
 
-    // fry struct
-    let fried_bacon: Bacon = fry!(my, key);
-    println!("Encrypted struct \"Fried Bacon\"");
-    dbg!(&fried_bacon);
-    println!();
+### Fry Bacon from a generic (String) message
 
-    // decrypt attempt with wrong key
-    println!("Attempt to decrypt with wrong key.");
-    let wrong_key = rng.gen_range(u128::min_value(), u128::max_value());
-    let fried_clone = fried_bacon.clone();
-    match unfry!(fried_clone, Person, wrong_key) {
-        Ok(p) => { dbg!(p); },
-        Err(e) => { dbg!(e); }
+**Note**: This may change in the future to allow to store generic Types in ```Fryable``` 
+
+THe provided ```struct bacon::Fryable```, which implements ```From<Vec<String>>```, can be used to fry String messages without having to declare a struct on your own. It is therefore suitable to be used for messages from the command line.
+
+1. Have a ```Vec<String>``` available
+2. Create a Fryable from Vec<String>
+3. Fry the fryable
+
+*Example*:
+
+```rust
+    fn main() {
+        // key from cli args
+        let  mut args: Vec<String> = std::env::args().collect();
+        let key_128 = bacon::key_128(&args[1]);
+        args.drain(0..2);  // that is the program name and secret
+        let fryable = Fryable::from(args);
+        let bacon = Bacon::fry(fryable, key_128);
+        let f = Bacon::unfry::<Speck, Fryable>(bacon, key_128).unwrap();
+        dbg!(f);
     }
-    println!();
-
-    // decrypt attempt with correct key
-    println!("Attempt to decrypt with correct key.");
-    match unfry!(fried_bacon, Person, key) {
-        Ok(p) => { dbg!(p); },
-        Err(e) => { dbg!(e); }
-    }
-}
 ```
