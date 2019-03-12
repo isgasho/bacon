@@ -5,7 +5,7 @@ extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 
-use bacon::{ Bacon, ciphers::Speck, Fry, Unfry };
+use bacon::{ Bacon, ciphers::speck::Speck, Fry, Unfry };
 use rand::{ distributions::{ Alphanumeric }, Rng };
 
 #[derive(Debug, Deserialize, Serialize)]

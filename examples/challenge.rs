@@ -1,6 +1,6 @@
 #[forbid(unsafe_code)]
 extern crate bacon;
-use bacon::{ Bacon, Fryable, Unfry, ciphers::Speck };
+use bacon::{ Bacon, Fryable, Unfry, ciphers::speck::Speck };
 
 // $ cargo run --example challenge {16-digit-key}
 // Example: cargo run --example challenge u.ijd.3HH8$n.MhK
