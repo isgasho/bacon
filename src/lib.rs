@@ -5,7 +5,7 @@ extern crate bincode;
 extern crate serde;
 #[macro_use] extern crate serde_derive;
 use serde::{ Deserialize, Serialize };
-use ciphers::{Cipher, speck::Speck };
+use ciphers::{Cipher, Decrypt, Encrypt, speck::Speck };
 
 pub mod ciphers;
 

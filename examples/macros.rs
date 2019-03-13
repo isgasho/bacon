@@ -3,7 +3,7 @@
 extern crate rand;
 extern crate serde;
 #[macro_use] extern crate serde_derive;
-use bacon::{ Bacon, ciphers::speck::Speck };  // ciphers to use macros fry! unfry! WHY?
+use bacon::{ Bacon, ciphers::{ Decrypt, Encrypt, speck::Speck } };  // ciphers to use macros fry! unfry! WHY?
 use rand::{ distributions::{ Alphanumeric }, Rng };
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

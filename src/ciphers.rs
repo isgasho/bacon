@@ -1,8 +1,10 @@
 //! Module that contains various Ciphers to be used with Bacon.
-#[forbid(unsafe_code)]
+#![forbid(unsafe_code)]
 
 /// Marker trait to be implemented by Ciphers supported by Bacon, ie ciphers::speck::Speck
 pub trait Cipher {}
+pub trait Decrypt { fn decrypt_block(&self, c: u128) -> u128; }
+pub trait Encrypt { fn encrypt_block(&self, m: u128) -> u128; }
 
 pub mod speck {
     //! The Speck implementation used in ```bacon``` is a fork from the [crate speck v1.1.0](https://docs.rs/crate/speck/1.1.0/source/src/lib.rs)
@@ -10,7 +12,7 @@ pub mod speck {
     //! SPECK is a really simple block cipher designed by the NSA. It is famous for its simple
     //! structure and code size, which can fit in just a couple of lines, while still preserving
     //! security.
-    use crate::Cipher;
+    use super::{ Cipher, Decrypt, Encrypt };
 
     const ROUNDS: u64 = 32;
 
@@ -59,21 +61,12 @@ pub mod speck {
             }
             ret
         }
+    }
 
-        /// Encrypt a 128-bit block with this key.
-        pub fn encrypt_block(&self, m: u128) -> u128 {
-            let mut m1 = (m >> 64) as u64;
-            let mut m2 = m as u64;
-            // We run a round for every subkey in the generated key schedule.
-            for &k in &self.schedule {
-                // Run a round on the message.
-                round!(m1, m2, k);
-            }
-            u128::from(m2) | u128::from(m1) << 64
-        }
-
+    impl Cipher for Speck {}
+    impl Decrypt for Speck {
         /// Decrypt a 128-bit block with this key.
-        pub fn decrypt_block(&self, c: u128) -> u128 {
+        fn decrypt_block(&self, c: u128) -> u128 {
             let mut c1 = (c >> 64) as u64;
             let mut c2 = c as u64;
             // We run a round for every subkey in the generated key schedule.
@@ -84,12 +77,22 @@ pub mod speck {
             u128::from(c2) | u128::from(c1) << 64
         }
     }
-
-    impl Cipher for Speck {}
-
+    impl Encrypt for Speck {
+        /// Encrypt a 128-bit block with this key.
+        fn encrypt_block(&self, m: u128) -> u128 {
+            let mut m1 = (m >> 64) as u64;
+            let mut m2 = m as u64;
+            // We run a round for every subkey in the generated key schedule.
+            for &k in &self.schedule {
+                // Run a round on the message.
+                round!(m1, m2, k);
+            }
+            u128::from(m2) | u128::from(m1) << 64
+        }
+    }
     #[cfg(test)]
     mod tests {
-        use super::Speck;
+        use super::{ super::{ Decrypt, Encrypt }, Speck };
 
         #[test]
         fn encrypt_decrypt() {
