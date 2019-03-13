@@ -62,6 +62,7 @@ macro_rules! fry {
                 }
                 data.push(key.encrypt_block( u128::from_be_bytes(x) ) );
             }
+            drop($key);
             Bacon { data: data }   
         }
     }
