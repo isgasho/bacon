@@ -12,5 +12,5 @@ pub trait Cipher {
     fn new(k: Self::Key) -> Self;
 }
 
-pub trait Decrypt { fn decrypt_block(&self, c: u128) -> u128; }
-pub trait Encrypt { fn encrypt_block(&self, m: u128) -> u128; }
+pub trait Decrypt { fn decrypt(&self, c: u128) -> u128; }
+pub trait Encrypt { fn encrypt(&self, m: u128) -> u128; }

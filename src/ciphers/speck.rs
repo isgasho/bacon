@@ -56,7 +56,7 @@ impl Cipher for Speck {
 
 impl Decrypt for Speck {
     /// Decrypt a 128-bit block with this key.
-    fn decrypt_block(&self, c: u128) -> u128 {
+    fn decrypt(&self, c: u128) -> u128 {
         let mut c1 = (c >> 64) as u64;
         let mut c2 = c as u64;
         // We run a round for every subkey in the generated key schedule.
@@ -70,7 +70,7 @@ impl Decrypt for Speck {
 
 impl Encrypt for Speck {
     /// Encrypt a 128-bit block with this key.
-    fn encrypt_block(&self, m: u128) -> u128 {
+    fn encrypt(&self, m: u128) -> u128 {
         let mut m1 = (m >> 64) as u64;
         let mut m2 = m as u64;
         // We run a round for every subkey in the generated key schedule.
@@ -97,7 +97,7 @@ mod tests {
 
             let speck: Speck = Speck::new(!x);
 
-            assert_eq!(speck.decrypt_block(speck.encrypt_block(x)), x);
+            assert_eq!(speck.decrypt(speck.encrypt(x)), x);
             //assert_eq!(speck.encrypt_block(x), encrypt_block(x, !x));
         }
     }
