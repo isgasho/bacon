@@ -5,7 +5,7 @@ extern crate bincode;
 extern crate serde;
 #[macro_use] extern crate serde_derive;
 use serde::{ Deserialize, Serialize };
-use ciphers::speck::Speck;
+use ciphers::{Cipher, speck::Speck };
 
 pub mod ciphers;
 
@@ -13,8 +13,6 @@ pub mod ciphers;
 /// Implements ```Fry``` and ```Unfry```. Cannot fry or unfry itself. (may change in the future).
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Bacon { pub data: Vec<u128> }
-/// Marker trait to be implemented by Ciphers supported by Bacon, ie ciphers::speck::Speck
-pub trait Cipher {}
 /// Provides methods to fry a struct. Return fried ```Bacon```
 pub trait Fry { fn fry<T: Serialize>(source: T, key: u128) -> Bacon; }
 /// Provides methods to unfry a fried Bacon. Return bincode::Result<T>

@@ -1,6 +1,8 @@
 //! Module that contains various Ciphers to be used with Bacon.
-
 #[forbid(unsafe_code)]
+
+/// Marker trait to be implemented by Ciphers supported by Bacon, ie ciphers::speck::Speck
+pub trait Cipher {}
 
 pub mod speck {
     //! The Speck implementation used in ```bacon``` is a fork from the [crate speck v1.1.0](https://docs.rs/crate/speck/1.1.0/source/src/lib.rs)
@@ -117,7 +119,6 @@ pub mod speck {
         // }
     }
 }
-
 
 /*
 /// Encrypt a block with key schedule generated on-the-go.
