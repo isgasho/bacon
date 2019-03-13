@@ -1,6 +1,5 @@
 //! The bacon crate provides functionality to en- and decrypt (called frying and unfrying),
 //! arbitrary ```struct T where T: Serialize + Deserialize```
-
 #[forbid(unsafe_code)]
 extern crate bincode;
 extern crate serde;
@@ -14,8 +13,8 @@ pub mod ciphers;
 /// Implements ```Fry``` and ```Unfry```. Cannot fry or unfry itself. (may change in the future).
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Bacon { pub data: Vec<u128> }
-/// Marker trait for Ciphers supported by Bacon
-pub trait Cipher {} // to be implemented by Speck, ChaCha etc
+/// Marker trait to be implemented by Ciphers supported by Bacon, ie ciphers::speck::Speck
+pub trait Cipher {}
 /// Provides methods to fry a struct. Return fried ```Bacon```
 pub trait Fry { fn fry<T: Serialize>(source: T, key: u128) -> Bacon; }
 /// Provides methods to unfry a fried Bacon. Return bincode::Result<T>
