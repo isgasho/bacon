@@ -37,7 +37,7 @@ pub mod speck {
 
     /// The Speck Cipher
     pub struct Speck { schedule: [u64; ROUNDS as usize], }
-
+    
     impl Speck {
         /// Generate a new key from some seed.
         pub fn new(k: u128) -> Speck {
@@ -84,38 +84,38 @@ pub mod speck {
     }
 
     impl Cipher for Speck {}
-}
 
-#[cfg(test)]
-mod tests {
-    use crate::ciphers::speck::Speck;
+    #[cfg(test)]
+    mod tests {
+        use super::Speck;
 
-    #[test]
-    fn encrypt_decrypt() {
-        for mut x in 0u128..90000 {
-            // <3
-            x = x.wrapping_mul(0x6eed0e9da4d94a4f6eed0e9da4d94a4f);
-            x ^= (x >> 6) >> (x >> 122);
-            x = x.wrapping_mul(0x6eed0e9da4d94a4f6eed0e9da4d94a4f);
+        #[test]
+        fn encrypt_decrypt() {
+            for mut x in 0u128..90000 {
+                // <3
+                x = x.wrapping_mul(0x6eed0e9da4d94a4f6eed0e9da4d94a4f);
+                x ^= (x >> 6) >> (x >> 122);
+                x = x.wrapping_mul(0x6eed0e9da4d94a4f6eed0e9da4d94a4f);
 
-            let speck = Speck::new(!x);
+                let speck = Speck::new(!x);
 
-            assert_eq!(speck.decrypt_block(speck.encrypt_block(x)), x);
-//            assert_eq!(key.encrypt_block(x), encrypt_block(x, !x));
+                assert_eq!(speck.decrypt_block(speck.encrypt_block(x)), x);
+                //assert_eq!(speck.encrypt_block(x), encrypt_block(x, !x));
+            }
         }
-    }
 
-    // #[test]
-    // fn test_vectors() {
-    //     // These test vectors are taken from the SPECK paper.
-    //     assert_eq!(
-    //         encrypt_block(
-    //             0x6c617669757165207469206564616d20,
-    //             0x0f0e0d0c0b0a09080706050403020100
-    //         ),
-    //         0xa65d9851797832657860fedf5c570d18
-    //     );
-    // }
+        // #[test]
+        // fn test_vectors() {
+        //     // These test vectors are taken from the SPECK paper.
+        //     assert_eq!(
+        //         encrypt_block(
+        //             0x6c617669757165207469206564616d20,
+        //             0x0f0e0d0c0b0a09080706050403020100
+        //         ),
+        //         0xa65d9851797832657860fedf5c570d18
+        //     );
+        // }
+    }
 }
 
 
