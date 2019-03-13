@@ -5,8 +5,9 @@ authors = ["aspera-non-spernit <g.s.d>"]
 edition = "2018"
 
 [dependencies]
+bigint = "4.4.1"
 bincode = "1.1.2"
-persy = "0.4.0"
+chacha = "0.3.0"
 serde = "1.0.89"
 serde_derive = "1.0.89"
 rand = "0.6.5"
