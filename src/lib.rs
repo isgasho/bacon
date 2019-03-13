@@ -48,7 +48,7 @@ pub fn key_128(pass: &str) -> u128 {
 macro_rules! fry {
     ($item:ident, $key:ident) => {
         {
-            let key = Speck::new($key);
+            let speck = Speck::new($key);
             let byte_doc = bincode::serialize(&$item).unwrap();
             let chunks = byte_doc.chunks(16);
             drop($item);
@@ -60,8 +60,9 @@ macro_rules! fry {
                     x[count] = *byte;
                     count += 1;
                 }
-                data.push(key.encrypt_block( u128::from_be_bytes(x) ) );
+                data.push(speck.encrypt_block( u128::from_be_bytes(x) ) );
             }
+            drop(speck);
             drop($key);
             Bacon { data: data }   
         }
