@@ -1,11 +1,38 @@
 //! Module that contains various Ciphers to be used with Bacon.
 #![forbid(unsafe_code)]
+extern crate bigint;
 
 /// Marker trait to be implemented by Ciphers supported by Bacon, ie ciphers::speck::Speck
 pub trait Cipher {}
 pub trait Decrypt { fn decrypt_block(&self, c: u128) -> u128; }
 pub trait Encrypt { fn encrypt_block(&self, m: u128) -> u128; }
 
+pub mod ChaCha20 {
+    use super::{ Cipher, Decrypt, Encrypt };
+    use bigint::uint::U256;
+    pub struct ChaCha20{ key: [u8; 32] }
+
+    impl ChaCha20 {
+        fn new(k: U256) -> ChaCha20 {
+            let mut keys = [0_u8; 32];
+            k.to_little_endian(&mut keys);
+            let nonce = [0u8; 8];
+            ChaCha20 {
+                key: keys
+            }
+        }
+    }
+    impl Cipher for ChaCha20 {}
+    impl Decrypt for ChaCha20 {
+        fn decrypt_block(&self, c: u128) -> u128 {
+            123_u128
+        }
+    }
+    impl Encrypt for ChaCha20 {
+        fn encrypt_block(&self, m: u128) -> u128 { 234_u128 }
+    }
+
+}
 pub mod speck {
     //! The Speck implementation used in ```bacon``` is a fork from the [crate speck v1.1.0](https://docs.rs/crate/speck/1.1.0/source/src/lib.rs)
     //! 
@@ -14,7 +41,7 @@ pub mod speck {
     //! security.
     use super::{ Cipher, Decrypt, Encrypt };
 
-    const ROUNDS: u64 = 32;
+
 
     /// A single round of SPECK.
     /// This is a keyed ARX transformation.
@@ -39,6 +66,7 @@ pub mod speck {
         }
     }
 
+    const ROUNDS: u64 = 32;
     /// The Speck Cipher
     pub struct Speck { schedule: [u64; ROUNDS as usize], }
     
@@ -48,10 +76,11 @@ pub mod speck {
             let mut k1 = (k >> 64) as u64;
             let mut k2 = k as u64;
 
-            let mut ret = Speck {
-                schedule: [0; ROUNDS as usize],
-            };
+            let mut ret = Speck { schedule: [0; 32 as usize], };
             // Run `ROUNDS - 1` rounds to generate the key's endpoint (the last key in the schedule).
+            println!("{:?}", ret.schedule.len());
+        
+            
             for i in 0..ROUNDS {
                 // Insert the key into the schedule.
                 ret.schedule[i as usize] = k2;
