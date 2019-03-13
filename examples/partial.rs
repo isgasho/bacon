@@ -24,7 +24,7 @@ fn main() {
         rng.sample_iter(&Alphanumeric).take(16).collect()
     };
     drop(args);
-    let key_128 = bacon::key_128(&key_str);
+    let mut key_128 = bacon::key_128(&key_str);
     key_str = "".to_string();               // emptying and
     drop(key_str);                          // dropping key
 
@@ -37,5 +37,8 @@ fn main() {
     dbg!(&p);
     
     let bank_account = Bacon::unfry::<Speck, Fryable>(p.bank_account, key_128).unwrap();
+    // always "empty" sensitive data and drop early
+    key_128 = 0_u128;
+    drop(key_128);
     dbg!(bank_account);
 }

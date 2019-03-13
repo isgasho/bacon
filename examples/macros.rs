@@ -1,10 +1,8 @@
 #[forbid(unsafe_code)]
-#[macro_use]
-extern crate bacon;
+#[macro_use] extern crate bacon;
 extern crate rand;
 extern crate serde;
-#[macro_use]
-extern crate serde_derive;
+#[macro_use] extern crate serde_derive;
 use bacon::{ Bacon, ciphers::speck::Speck };  // ciphers to use macros fry! unfry! WHY?
 use rand::{ distributions::{ Alphanumeric }, Rng };
 
@@ -31,7 +29,7 @@ fn main() {
         rng.sample_iter(&Alphanumeric).take(16).collect()
     };
     drop(args);
-    let key_128 = bacon::key_128(&key_str);
+    let mut key_128 = bacon::key_128(&key_str);
     key_str = "".to_string();               // emptying and
     drop(key_str);                          // dropping key
     
@@ -60,6 +58,9 @@ fn main() {
         Ok(p) => { dbg!(p); },
         Err(e) => { dbg!(e); }
     }
+    // always "empty" sensitive data and drop early
+    key_128 = 0_u128;
+    drop(key_128);
     println!();
 
     // decrypt attempt with wrong key

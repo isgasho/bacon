@@ -7,12 +7,15 @@ use bacon::{ Bacon, Fry, Fryable, Unfry, ciphers::speck::Speck }; // a generic w
 fn main() {
     // key from cli args
     let  mut args: Vec<String> = std::env::args().collect();
-    let key_128 = bacon::key_128(&args[1]);
+    let mut key_128 = bacon::key_128(&args[1]);
     args.drain(0..2);  // that is the program name and secret
     let fryable = Fryable::from(args);
     dbg!(&fryable);
     let bacon = Bacon::fry(fryable, key_128);
     dbg!(&bacon);
     let f = Bacon::unfry::<Speck, Fryable>(bacon, key_128).unwrap();
+    // always "empty" sensitive data and drop early
+    key_128 = 0_u128;
+    drop(key_128);
     dbg!(f);
 }

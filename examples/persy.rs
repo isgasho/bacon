@@ -6,8 +6,7 @@ extern crate persy;
 extern crate serde;
 #[macro_use] extern crate serde_derive;
 use bacon::{ Bacon, ciphers::speck::Speck };
-
-use bincode::{serialize, deserialize};
+use bincode::{ serialize, deserialize };
 use persy::{ Config, Persy, PersyId, PersyError };
 use rand::{ distributions::{ Alphanumeric }, Rng };
 use std::fmt::Debug;
@@ -86,7 +85,7 @@ fn main() {
         rng.sample_iter(&Alphanumeric).take(16).collect()
     };
     drop(args);
-    let key_128 =  bacon::key_128(&key_str);
+    let mut key_128 =  bacon::key_128(&key_str);
     key_str = "".to_string();
     drop(key_str);
     
@@ -127,7 +126,13 @@ fn main() {
             dbg!(&bacon);
             println!("Unfry(decrypt) bacon into Person");
             match unfry!(bacon, Person, key_128) {
-                Ok(p) => { dbg!(p); },
+                Ok(p) => {
+                    // always "empty" sensitive data and drop early
+                    key_128 = 0_u128;
+                    drop(key_128);
+                    
+                    dbg!(p);
+                },
                 Err(e) => { dbg!(e); }
             }
         },
