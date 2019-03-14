@@ -1,5 +1,5 @@
-## For the fork of [crate speck v1.1.0](https://docs.rs/crate/speck/1.1.0/source/src/lib.rs)
-implemented in bacon::src::ciphers::speck::rs
+## The fork of [crate speck v1.1.0](https://docs.rs/crate/speck/1.1.0/source/src/lib.rs)
+and used in bacon::src::ciphers::speck::rs
 
 The MIT License (MIT)
 
