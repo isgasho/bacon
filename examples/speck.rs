@@ -6,30 +6,26 @@ use bacon::{ Bacon, BaconState, ciphers::{ Cipher, speck::Speck, Decrypt, Encryp
 use std::collections::HashMap;
 
 #[derive(Debug, Deserialize, Serialize)]
-enum Sex { HotFemale, HotterFemale, Chad }
+enum Sex { Male, Female, Diverse }
 #[derive(Debug, Deserialize, Serialize)]
-struct Dancer {
+struct Person {
     name: String,
-    favorite_dance: String,
     age: u8,
     sex: Sex,
-    address: String
+    address: String,
+    descr: String,
 }
 
 fn main() {
-
-    let dancer = Dancer {
-        name: "SriChaCa Dunzapawny".to_string(),
-        favorite_dance: "Two-Step".to_string(),
-        age: 18,
-        sex: Sex::HotterFemale,
-        address: "7 Park Ave, Olympus Mons, Mars".to_string(),
+    let person = Person {
+        name: "Ernst Stavro Blofeld".to_string(),
+        age: 77,
+        sex: Sex::Male,
+        address: "In a Vulcano in or near Japan".to_string(),
+        descr: "CEO of SPECKTRE. Very evil.".to_string()
     };
     // optional description
-    let mut bacon_descr = HashMap::new();
-    bacon_descr.insert("Type".to_string(), "examples/speck::Dancer".to_string());
-    bacon_descr.insert("Cipher".to_string(), "bacon::ciphers::speck::Speck".to_string());
-    let mut bacon = Bacon::new(BaconState::Unfried, Some(bacon_descr), dancer);
+    let mut bacon = Bacon::new(BaconState::Unfried, None, person);
     println!("unfried bacon: {:#?}", bacon);
 
     // receiving 16 character secret from command line
@@ -48,6 +44,6 @@ fn main() {
     // unfry bacon
     bacon = cipher.decrypt(bacon);
     println!("unfried bacon: {:#?}", bacon);
-    let new_dancer: Dancer = unfry!(bacon, Dancer).unwrap();
-    dbg!(new_dancer);
+    let unkn_person: Person = unfry!(bacon, Person).unwrap();
+    dbg!(unkn_person);
 }
