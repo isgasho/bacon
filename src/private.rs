@@ -1,28 +1,3 @@
-/// Provides methods to fry a struct. Return fried ```Bacon```
-// pub trait Fry { fn fry<K: for Cipher<K,T>, C: Cipher<K, T>, T: Serialize>(source: T, key: u128) -> Bacon; }
-/// Provides methods to unfry a fried Bacon. Return bincode::Result<T>
-// pub trait Unfry { fn unfry<C: Cipher<K, T>, T: for<'de> Deserialize<'de>>(bacon: Bacon, key: u128) -> bincode::Result<T>; }
-
-
-/// Preferred way of creating a Fryable
-// impl From<Vec<String>> for Bacon { 
-//     fn from(strings: Vec<String>) -> Self {
-//         let mut data = vec![];
-//         for string in strings {
-//             data.push(chunks!(string))
-//         }
-//         Bacon { state: BaconState::Unfried, data: data }
-//     }
-// }
-
-// impl Unfry for Bacon {
-//     fn unfry<C: Cipher, T: for<'de> Deserialize<'de>>(bacon: Bacon, key: u128) -> bincode::Result<T> {
-//         unfry!(bacon, T, key)
-//     }
-// }
-
-
-
 /*
 #[cfg(test)]
 mod tests {
