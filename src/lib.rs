@@ -36,9 +36,6 @@ impl Bacon {
         //drop(d); // chunks! drops d
         Bacon { state, descr, data }
     }
-    pub fn fry<C: Cipher, K>(bacon: Bacon, key: K) { // -> Bacon
-       
-    }
 }
 
 impl From<String> for Bacon {
