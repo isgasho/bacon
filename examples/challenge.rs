@@ -1,12 +1,13 @@
 #[forbid(unsafe_code)]
 extern crate bacon;
-use bacon::{ Bacon, Fryable, Unfry, ciphers::speck::Speck };
+use bacon::{ Bacon, ciphers::speck::Speck };
 
 // $ cargo run --example challenge {16-digit-key}
 // Example: cargo run --example challenge u.ijd.3HH8$n.MhK
 fn main() {
     let key_str: Vec<String> = std::env::args().collect();
     let key_u128 = bacon::key_128(&key_str[1]);
+    /*
     let bacon =  Bacon {
         data: vec![
             121388295326026093385741144774451129613,
@@ -29,4 +30,5 @@ fn main() {
         Ok(f) => { dbg!(f); },
         Err(e) => { dbg!(e); },
     }
+    */
 }

@@ -7,8 +7,8 @@ extern crate serde;
 
 pub mod ciphers;
 
-use serde::{ Deserialize, Serialize };
-use ciphers::{ Cipher, Decrypt, Encrypt, speck::Speck };
+use serde::{ Serialize };
+use ciphers::{ Cipher };
 
 /// ```Bacon``` a wrapper for an encrypted struct (called bacon) stored in the field ```data: Vec<u128>```
 /// Implements ```Fry``` and ```Unfry```. Cannot fry or unfry itself. (may change in the future).
@@ -17,12 +17,23 @@ pub enum BaconState { Fried, Unfried }
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Bacon { pub state: BaconState, pub data: Vec<u128> }
 
+impl Bacon {
+    /// Create a new Bacon with State Fried | Unfried and d being the type that hold the data
+    /// of the wrapped struct. Bacon serializes ```d: T``` into blocks in a Vec<u128>
+    pub fn new<T: Serialize>(state: BaconState, d: T) -> Bacon {
+        let data = chunks!(d);
+        Bacon { state, data }
+    }
+    pub fn fry<C: Cipher, K>(bacon: Bacon, key: K) { // -> Bacon
+       
+    }
+}
 impl From<String> for Bacon {
      fn from(string:  String) -> Self {
         let data = chunks!(string);
         Bacon {
             state: BaconState::Unfried,
-            data: data,
+            data
         }
      }
 }
@@ -51,16 +62,17 @@ macro_rules! chunks {
                     count += 1;
                     
                 }
-                data.push( u128::from_be_bytes(x) );
+                data.push( u128::from_le_bytes(x) );
             }
             data
         }
     }
 }
+
 /// Fry a serializable struct on the go.
 #[macro_export]
 macro_rules! fry {
-    ($cipher:ty, $key:ident, $item:ident) => {
+    ($cipher:expr, $key:ident, $item:ident) => {
         {
             let cipher = $cipher::new($key);
             drop($key);

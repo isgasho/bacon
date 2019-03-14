@@ -4,7 +4,7 @@ extern crate rand;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
-use bacon::{ Bacon, Fry, Fryable, Unfry, ciphers::speck::Speck };
+use bacon::{ Bacon, ciphers::speck::Speck };
 use rand::{ distributions::{ Alphanumeric }, Rng };
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -24,6 +24,7 @@ fn main() {
         rng.sample_iter(&Alphanumeric).take(16).collect()
     };
     drop(args);
+/*
     let mut key_128 = bacon::key_128(&key_str);
     key_str = "".to_string();               // emptying and
     drop(key_str);                          // dropping key
@@ -31,7 +32,7 @@ fn main() {
     // create partial fryable
     let fryable_bank_account = Fryable::from(vec!["First Moon Bank".to_string(), "IPBAN: M01A123456789".to_string()]);
     // create a person
-    let fried_bank_account = Bacon::fry(fryable_bank_account, key_128);
+    let fried_bank_account = Bacon::fry::<Speck, _>(fryable_bank_account, key_128);
     let p = Person{ id: 1234, name: "Dr Blofeld".to_string(), bank_account: fried_bank_account };
 
     dbg!(&p);
@@ -41,4 +42,5 @@ fn main() {
     key_128 = 0_u128;
     drop(key_128);
     dbg!(bank_account);
+*/
 }
