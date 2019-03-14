@@ -4,9 +4,9 @@ extern crate serde;
 extern crate bincode;
 use bacon::{ Bacon, BaconState, ciphers::{ Cipher, chacha20::ChaCha20, Decrypt, Encrypt } };
 
-#[derive(Serialize)]
+#[derive(Deserialize, Serialize)]
 enum Sex { HotFemale, HotterFemale }
-#[derive(Serialize)]
+#[derive(Deserialize, Serialize)]
 struct Dancer {
     name: String,
     favorite_dance: String,
@@ -15,7 +15,7 @@ struct Dancer {
 }
 fn main() {
     let dancer = Dancer {
-        name: "SriChaCa Dunzapawn".to_string(),
+        name: "SriChaCha Dunzapawn".to_string(),
         favorite_dance: "Two-Step".to_string(),
         age: 18,
         sex: Sex::HotterFemale

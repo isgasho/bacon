@@ -7,7 +7,7 @@ extern crate serde;
 
 pub mod ciphers;
 
-use serde::{ Serialize };
+use serde::{ Deserialize, Serialize };
 use ciphers::{ Cipher };
 use std::collections::HashMap;
 
@@ -21,7 +21,7 @@ pub struct Bacon { pub state: BaconState, pub descr: Option<HashMap<String,Strin
 impl Bacon {
     /// Create a new Bacon with State Fried | Unfried and d being the type that hold the data
     /// of the wrapped struct. Bacon serializes ```d: T``` into blocks in a Vec<u128>
-    pub fn new<T: Serialize>(state: BaconState, descr: Option<HashMap<String,String>>, d: T) -> Bacon {
+    pub fn new<T: for <'de> Deserialize<'de> + Serialize>(state: BaconState, descr: Option<HashMap<String,String>>, d: T) -> Bacon {
         let data = chunks!(d);
         Bacon { state, descr, data }
     }
@@ -29,14 +29,11 @@ impl Bacon {
        
     }
 }
+
 impl From<String> for Bacon {
      fn from(string:  String) -> Self {
         let data = chunks!(string);
-        Bacon {
-            state: BaconState::Unfried,
-            descr: None,
-            data
-        }
+        Bacon { state: BaconState::Unfried, descr: None, data }
      }
 }
 
@@ -62,7 +59,6 @@ macro_rules! chunks {
                 for byte in chunk.clone() {
                     x[count] = *byte;
                     count += 1;
-                    
                 }
                 data.push( u128::from_le_bytes(x) );
             }

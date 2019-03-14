@@ -5,9 +5,9 @@ extern crate bincode;
 use bacon::{ Bacon, BaconState, ciphers::{ Cipher, speck::Speck, Decrypt, Encrypt } };
 use std::collections::HashMap;
 
-#[derive(Serialize)]
+#[derive(Deserialize, Serialize)]
 enum Sex { HotFemale, HotterFemale, Chad }
-#[derive(Serialize)]
+#[derive(Deserialize, Serialize)]
 struct Dancer {
     name: String,
     favorite_dance: String,
