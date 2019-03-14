@@ -13,14 +13,11 @@ fn handle_client(mut stream: TcpStream) {
     let post = b"POST / HTTP/1.1\r\n";
     
     let response = if buffer.starts_with(post) {
-
-        let response = "HTTP/1.1 200 OK\r\n\r\n";
         let contents = "Christmas package received. Thanks for the bacon\n";
         format!("HTTP/1.1 200 OK\r\n\r\n{}", contents)
     } else {
-        let response = "HTTP/1.1 405 OK\r\n\r\n";
         let contents = "We love Bacon, but you have to POST it.\n";
-        format!("HTTP/1.1 200 OK\r\n\r\n{}", contents)
+        format!("HTTP/1.1 405 OK\r\n\r\n{}", contents)
     };
     stream.write(response.as_bytes()).unwrap();
     stream.flush().unwrap();
