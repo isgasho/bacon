@@ -1,18 +1,26 @@
 //! Bacon does not provide an own imiplementation. The ChaCha20 Cipher used is the
 //! [crate chacha v0.3.0](https://docs.rs/chacha/0.3.0/chacha/)
 extern crate chacha;
+extern crate rand;
 use super::{ super::{ Bacon, BaconState }, Cipher, Decrypt, Encrypt };
 use bigint::uint::U256;
 use chacha::{ ChaCha, KeyStream };
+use rand::Rng;
+
 pub struct ChaCha20{ key: [u8; 32], nonce: [u8; 8] }
 
 impl Cipher for ChaCha20 {
     type Key = U256;
     type Cipher = Self;
-    fn new(k: Self::Key) -> Self {
+    fn new(k: Self::Key, n: Option<[u8; 8]>) -> Self {
         let mut key = [0_u8; 32];
         k.to_little_endian(&mut key);
-        let nonce = [1_u8, 0_u8, 0_u8, 0_u8, 1_u8, 0_u8, 0_u8, 0_u8];
+        let mut nonce: [u8; 8] = [1_u8, 0_u8, 0_u8, 0_u8, 1_u8, 0_u8, 0_u8, 0_u8];
+        if n.is_some() { nonce = n.unwrap(); }
+        for i in 0..8 {
+           nonce[i] = rand::thread_rng().gen_range(0, 255);
+        }
+        dbg!( &nonce );
         ChaCha20 { key, nonce }
     }
 }
