@@ -10,7 +10,7 @@ use super::Bacon;
 pub trait Cipher { 
     type Key;
     type Cipher;
-    fn new(k: Self::Key) -> Self;
+    fn new(k: Self::Key, n: Option<[u8; 8]>) -> Self;
 }
 
 pub trait Decrypt { fn decrypt(&self, bacon: Bacon) -> Bacon; }
