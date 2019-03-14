@@ -4,7 +4,7 @@ extern crate rand;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
-use bacon::{ Bacon, ciphers::speck::Speck };
+use bacon::{ Bacon, BaconState, ciphers::{ Cipher, speck::Speck, Encrypt } };
 use rand::{ distributions::{ Alphanumeric }, Rng };
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -24,23 +24,28 @@ fn main() {
         rng.sample_iter(&Alphanumeric).take(16).collect()
     };
     drop(args);
-/*
-    let mut key_128 = bacon::key_128(&key_str);
+
+    let mut key_u128 = bacon::key_128(&key_str);
     key_str = "".to_string();               // emptying and
-    drop(key_str);                          // dropping key
+    drop(key_str);                          // dropping key str
 
-    // create partial fryable
-    let fryable_bank_account = Fryable::from(vec!["First Moon Bank".to_string(), "IPBAN: M01A123456789".to_string()]);
-    // create a person
-    let fried_bank_account = Bacon::fry::<Speck, _>(fryable_bank_account, key_128);
-    let p = Person{ id: 1234, name: "Dr Blofeld".to_string(), bank_account: fried_bank_account };
-
-    dbg!(&p);
-    
-    let bank_account = Bacon::unfry::<Speck, Fryable>(p.bank_account, key_128).unwrap();
-    // always "empty" sensitive data and drop early
-    key_128 = 0_u128;
-    drop(key_128);
-    dbg!(bank_account);
-*/
+    // create partial bacon. The data is an array representing a bank account
+    // The bank account info is stored in serialized form, but not yet encrypted!
+    // use bacon::{ Bacon, BaconState }
+    let mut bcn_bank_account = Bacon::new(  
+        BaconState::Unfried,
+        None,
+        ["First Moon Bank".to_string(), "IPBAN: M01A123456789".to_string()]
+    );
+    dbg!(&bcn_bank_account);
+    // use ciphers::{ Cipher, speck::Speck, Decrypt, Encrypt }
+    let cipher = Speck::new(key_u128);
+    // Encrypt the bank account
+    bcn_bank_account = cipher.encrypt(bcn_bank_account);
+    // emptying and dropping key as soon as possible
+    key_u128 = 0;
+    drop(key_u128);
+    // add the fried bacon to person
+    let person = Person{ id: 1234, name: "Dr Blofeld".to_string(), bank_account: bcn_bank_account };
+    dbg!(person);   
 }
