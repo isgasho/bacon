@@ -58,7 +58,7 @@ impl Decrypt for Speck {
         let mut data = vec![];
         for block in &bacon.data {
             let mut c1 = (block >> 64) as u64;
-            let mut c2 = (block >> 64) as u64;
+            let mut c2 = (block >> 0) as u64;
             // We run a round for every subkey in the generated key schedule.
             for &k in self.schedule.iter().rev() {
                 // Run a round on the message.
@@ -76,7 +76,7 @@ impl Encrypt for Speck {
         let mut data = vec![];
         for block in &bacon.data {
             let mut m1 = (block >> 64) as u64;
-            let mut m2 = (block >> 64) as u64;
+            let mut m2 = (block >> 0) as u64;
             // We run a round for every subkey in the generated key schedule.
             for &k in &self.schedule {
                 // Run a round on the message.
