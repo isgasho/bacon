@@ -68,7 +68,7 @@ impl Decrypt for Speck {
             }
             data.push(u128::from(c2) | u128::from(c1) << 64);
         }
-        Bacon { state: BaconState::Unfried, data }
+        Bacon { state: BaconState::Unfried, descr: bacon.descr.clone(), data }
     }
 }
 
@@ -86,6 +86,6 @@ impl Encrypt for Speck {
             }
             data.push(u128::from(m2) | u128::from(m1) << 64);
         }
-        Bacon { state: BaconState::Fried, data }
+        Bacon { state: BaconState::Fried, descr: bacon.descr.clone(), data }
     }
 }

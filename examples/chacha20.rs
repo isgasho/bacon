@@ -22,7 +22,7 @@ fn main() {
     };
     let k = bigint::uint::U256::MAX;
     let cipher: ChaCha20 = ChaCha20::new(k);
-    let mut bacon = Bacon::new(BaconState::Unfried, dancer);
+    let mut bacon = Bacon::new(BaconState::Unfried, None, dancer);
     dbg!(&bacon);
     bacon = cipher.encrypt(bacon);
     dbg!(&bacon);

@@ -9,20 +9,21 @@ pub mod ciphers;
 
 use serde::{ Serialize };
 use ciphers::{ Cipher };
+use std::collections::HashMap;
 
 /// ```Bacon``` a wrapper for an encrypted struct (called bacon) stored in the field ```data: Vec<u128>```
 /// Implements ```Fry``` and ```Unfry```. Cannot fry or unfry itself. (may change in the future).
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum BaconState { Fried, Unfried }
 #[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Bacon { pub state: BaconState, pub data: Vec<u128> }
+pub struct Bacon { pub state: BaconState, pub descr: Option<HashMap<String,String>>, pub data: Vec<u128> }
 
 impl Bacon {
     /// Create a new Bacon with State Fried | Unfried and d being the type that hold the data
     /// of the wrapped struct. Bacon serializes ```d: T``` into blocks in a Vec<u128>
-    pub fn new<T: Serialize>(state: BaconState, d: T) -> Bacon {
+    pub fn new<T: Serialize>(state: BaconState, descr: Option<HashMap<String,String>>, d: T) -> Bacon {
         let data = chunks!(d);
-        Bacon { state, data }
+        Bacon { state, descr, data }
     }
     pub fn fry<C: Cipher, K>(bacon: Bacon, key: K) { // -> Bacon
        
@@ -33,6 +34,7 @@ impl From<String> for Bacon {
         let data = chunks!(string);
         Bacon {
             state: BaconState::Unfried,
+            descr: None,
             data
         }
      }

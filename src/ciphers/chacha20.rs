@@ -28,6 +28,6 @@ impl Encrypt for ChaCha20 {
             chacha.xor_read(&mut buf[..]).expect("hit end of stream far too soon");
             data.push(u128::from_le_bytes(buf));
         }
-        Bacon { state: BaconState::Fried, data }
+        Bacon { state: BaconState::Fried, descr: bacon.descr.clone(), data }
     }
 }
