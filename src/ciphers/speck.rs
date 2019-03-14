@@ -35,7 +35,7 @@ impl Cipher for Speck {
     type Key = u128;
     type Cipher = Speck;
     /// Creates a ne Speck Cipher. The key: u128 split into k1: u64 and k2: u64
-    fn new(k: Self::Key) -> Self {
+    fn new(k: Self::Key, n: Option<[u8; 8]>) -> Self {
         let mut k1 = (k >> 64) as u64;
         let mut k2 = k as u64;
 
