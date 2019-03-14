@@ -16,7 +16,7 @@ impl Cipher for ChaCha20 {
 }
 impl Decrypt for ChaCha20 {
     fn decrypt(&self, bacon: Bacon) -> Bacon {
-        self.encrypt(bacon)
+        self.encrypt(bacon) // TODO: state is wrong should be unfried from here
     }
 }
 impl Encrypt for ChaCha20 {
