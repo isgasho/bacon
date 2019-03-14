@@ -19,6 +19,7 @@ pub enum BaconState { Fried, Unfried }
 /// ```Bacon``` is a reusable wrapper for an arbitrarty serialized struct stored in the field ```data: Vec<u128>```
 /// The optional description can be used to share information regarding the Bacon, that may be neccessary to
 /// en-/decrypt a Bacon
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Bacon { pub state: BaconState, pub descr: Option<HashMap<String,String>>, pub data: Vec<u128> }
 
 impl Bacon {
