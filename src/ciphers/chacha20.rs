@@ -2,13 +2,14 @@
 //! [crate chacha v0.3.0](https://docs.rs/chacha/0.3.0/chacha/)
 extern crate chacha;
 extern crate rand;
-use super::{ super::{ Bacon, BaconState }, Cipher, Decrypt, Encrypt };
+use super::{ super::{ Bacon, BaconState }, Authenticate, Cipher, Decrypt, Encrypt, MAC };
 use bigint::uint::U256;
 use chacha::{ ChaCha, KeyStream };
 use rand::Rng;
+use std::{ collections::hash_map::DefaultHasher, hash::{ Hash, Hasher }, ops::{ BitOr, BitXor} };
 
+#[derive(Hash)]
 pub struct ChaCha20{ key: [u8; 32], nonce: [u8; 8] }
-
 impl Cipher for ChaCha20 {
     type Key = U256;
     type Cipher = Self;
@@ -20,10 +21,32 @@ impl Cipher for ChaCha20 {
         for i in 0..8 {
            nonce[i] = rand::thread_rng().gen_range(0, 255);
         }
-        dbg!( &nonce );
+        // dbg!( &nonce );
         ChaCha20 { key, nonce }
     }
 }
+struct BlockSize(u8);
+impl Authenticate for ChaCha20 {  // TODO: Hash not impl for HashMap<String, String> of Bacon
+    fn hash(&self, bacon: Bacon)-> MAC {
+        let mut hasher = DefaultHasher::new();
+        self.key.hash(&mut hasher);
+        self.nonce.hash(&mut hasher);
+        let kh = hasher.finish();
+        let mut o_k: u64 = kh.bitxor(0x5c * 64);
+        let mut i_k: u64 = kh.bitxor(0x36 * 64);
+        let mut b_k: u64 = 0;
+        for block in &bacon.data {
+            block.hash(&mut hasher);
+            b_k ^= b_k | hasher.finish();              
+        }
+        bacon.data.hash(&mut hasher);
+
+        ( o_k | (i_k | hasher.finish() ) ).hash(&mut hasher);
+  
+        MAC( hasher.finish() )
+    }
+}
+
 impl Decrypt for ChaCha20 {
     fn decrypt(&self, bacon: Bacon) -> Bacon {
         self.encrypt(bacon) // TODO: state is wrong should be unfried from here
