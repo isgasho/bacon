@@ -55,7 +55,6 @@ impl From<Vec<String>> for Bacon {
      }
 }
 
-
 /// Utility function to turn a ```&str``` into a u128. The max length considered is 16 characters.
 pub fn key_128(pass: &str) -> u128 {
     let mut x:  [u8; 16] = [0; 16];
@@ -66,14 +65,12 @@ pub fn key_128(pass: &str) -> u128 {
 }
 
 // TODO: should not be exported. implementing ciphers should use Bacon.data
-
-// TODO: should not be exported. implementing ciphers should use Bacon.data
 #[macro_export]
 macro_rules! fry {
     ($item:ident) => {
-        {
-            let byte_doc = bincode::serialize(&$item).unwrap();
-            drop($item);
+        {    // Using $item twice like this can cause an expression with side effects to be evaluated twice.
+            let item = $item;
+            let byte_doc = bincode::serialize(&item).unwrap();
             let chunks = byte_doc.chunks(16);
             let mut data: Vec<u128> = vec![];
             let mut x: [u8; 16] =  [0; 16];
