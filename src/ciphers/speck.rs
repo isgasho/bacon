@@ -40,9 +40,7 @@ impl Cipher for Speck {
         let mut k2 = k as u64;
 
         let mut ret = Speck { schedule: [0; 32 as usize], };
-        // Run `ROUNDS - 1` rounds to generate the key's endpoint (the last key in the schedule).
-        println!("{:?}", ret.schedule.len());
-    
+        // Run `ROUNDS - 1` rounds to generate the key's endpoint (the last key in the schedule).    
         for i in 0..ret.schedule.len() {
             // Insert the key into the schedule.
             ret.schedule[i as usize] = k2;
