@@ -12,6 +12,6 @@ pub trait Cipher {
     type Cipher;
     fn new(k: Self::Key, n: Option<[u8; 8]>) -> Self;
 }
-
+// TODO: return Result<Bacon, BaconError<T> 
 pub trait Decrypt { fn decrypt(&self, bacon: Bacon) -> Bacon; }
 pub trait Encrypt { fn encrypt(&self, bacon: Bacon) -> Bacon; }
