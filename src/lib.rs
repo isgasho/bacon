@@ -30,8 +30,10 @@ pub struct Bacon { pub state: BaconState, pub descr: Option<HashMap<String,Strin
 impl Bacon {
     /// Create a new Bacon with State Fried | Unfried and d being the type that hold the data
     /// of the wrapped struct. Bacon serializes ```d: T``` into blocks in a Vec<u128>
+    /// explicitly drops(d)
     pub fn new<T: for <'de> Deserialize<'de> + Serialize>(state: BaconState, descr: Option<HashMap<String,String>>, d: T) -> Bacon {
-        let data = chunks!(d);
+        let data = fry!(d);
+        //drop(d); // chunks! drops d
         Bacon { state, descr, data }
     }
     pub fn fry<C: Cipher, K>(bacon: Bacon, key: K) { // -> Bacon
@@ -41,10 +43,11 @@ impl Bacon {
 
 impl From<String> for Bacon {
      fn from(string:  String) -> Self {
-        let data = chunks!(string);
+        let data = fry!(string);
         Bacon { state: BaconState::Unfried, descr: None, data }
      }
 }
+
 
 /// Utility function to turn a ```&str``` into a u128. The max length considered is 16 characters.
 pub fn key_128(pass: &str) -> u128 {
@@ -52,15 +55,16 @@ pub fn key_128(pass: &str) -> u128 {
      for (count, byte) in pass.as_bytes().iter().enumerate() {
         x[count] = *byte;
     }
-    u128::from_be_bytes(x)
+    u128::from_le_bytes(x)
 }
 
 // TODO: should not be exported. implementing ciphers should use Bacon.data
 #[macro_export]
-macro_rules! chunks {
+macro_rules! fry {
     ($item:ident) => {
         {
             let byte_doc = bincode::serialize(&$item).unwrap();
+            drop($item);
             let chunks = byte_doc.chunks(16);
             let mut data: Vec<u128> = vec![];
             let mut x: [u8; 16] =  [0; 16];
@@ -77,42 +81,13 @@ macro_rules! chunks {
     }
 }
 
-/// Fry a serializable struct on the go.
-#[macro_export]
-macro_rules! fry {
-    ($cipher:expr, $key:ident, $item:ident) => {
-        {
-            let cipher = $cipher::new($key);
-            drop($key);
-            let byte_doc = bincode::serialize(&$item).unwrap();
-            let chunks = byte_doc.chunks(16);
-            drop(&byte_doc);
-            let mut data: Vec<u128> = vec![];
-            let mut x:  [u8; 16] =  [0; 16];
-            for chunk in chunks {
-                let mut count = 0;
-                for byte in chunk.clone() {
-                    x[count] = *byte;
-                    count += 1;
-                }
-                data.push(cipher.encrypt_block( u128::from_be_bytes(x) ) );
-            }
-            drop(cipher);
-            Bacon { data: data }   
-            
-        }
-    }
-}
-
-/// Unfry a Bacon into struct T:Deserialize on the go.
 #[macro_export]
 macro_rules! unfry {
-    ($cipher:ty, $fried_bacon:ident, $target:ty, $key:ident) => {
+    ($fried_bacon:ident, $target:ty) => {
         {
-            let cipher = $cipher::new($key);
             let mut decr_bytes: Vec<u8> = vec![];
-            for chunk in $fried_bacon.data {
-                for byte in u128::to_be_bytes(cipher.decrypt_block(chunk)).iter() {
+            for block in $fried_bacon.data {
+                for byte in u128::to_le_bytes(block).iter() {
                     decr_bytes.push(*byte);
                 }    
             }  
