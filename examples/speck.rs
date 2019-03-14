@@ -28,7 +28,7 @@ fn main() {
     // optional description
     let mut descr: HashMap<String, String> = HashMap::new();
     descr.insert("Cipher".to_string(), "bacon::ciphers::speck::Speck".to_string());
-    descr.insert("Type".to_string(), "bacon::examples::Person { String, u8, bacon::examples::Sex, String, String }".to_string());
+    descr.insert("Type_Definition".to_string(), "bacon::examples::Person { String, u8, bacon::examples::Sex, String, String }".to_string());
 
     let mut bacon = Bacon::new(BaconState::Unfried, Some(descr), person);
     println!("unfried bacon: {:#?}", bacon);
