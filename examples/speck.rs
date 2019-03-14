@@ -3,7 +3,6 @@ extern crate serde;
 #[macro_use] extern crate serde_derive;
 extern crate bincode;
 use bacon::{ Bacon, BaconState, ciphers::{ Cipher, speck::Speck, Decrypt, Encrypt } };
-use std::collections::HashMap;
 
 #[derive(Debug, Deserialize, Serialize)]
 enum Sex { Male, Female, Diverse }

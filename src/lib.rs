@@ -10,8 +10,7 @@ extern crate serde;
 pub mod ciphers;
 
 use serde::{ Deserialize, Serialize };
-use ciphers::{ Cipher };
-use std::collections::HashMap;
+use std::{ collections::HashMap, fmt::{ Display, Formatter } };
 
 /// Fried: Data stored in encrypted form. Unfried: The data is serialized but not encrypted.
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -37,11 +36,51 @@ impl Bacon {
         Bacon { state, descr, data }
     }
 }
-
+/*
+Bacon {
+    state: Fried,
+    descr: Some(
+        {
+            "Type": "examples/speck::Dancer",
+            "Cipher": "bacon::ciphers::speck::Speck"
+        }
+    ),
+    data: [
+        229965607915813845722151454364448246776,
+        298073251133161606498395778151909232536,
+        327638238595840205410302835760351697012,
+        168275590793864324729845200116168390578,
+        166550460845743965776596515550712238557,
+        206550846213499455913740877942280604955
+    ]
+}*/
+// impl Display for Bacon {
+//       fn fmt(&self, f: &mut Formatter) -> Result {
+//         let mut data_str: String = String::new();
+//         data_tr.push_str("data: [\n");
+//         for block in self.data {
+//             data.push_str(block);
+//             data.push_str(",\n");
+//         }
+//         data_str.push_str("]\n}");
+//         write!(f, "Bacon {{\n    state: {},    {", self.state, self.y)
+//     }
+// }
 impl From<String> for Bacon {
      fn from(string:  String) -> Self {
         let data = fry!(string);
         Bacon { state: BaconState::Unfried, descr: None, data }
+     }
+}
+
+impl From<Vec<String>> for Bacon {
+     fn from(strings: Vec<String>) -> Self {
+        let mut data: Vec<Vec<u128>> = vec![];
+        for string in strings {
+            data.push(fry!(string));
+        }
+        dbg!(data);
+        Bacon { state: BaconState::Unfried, descr: None, data: vec![] }
      }
 }
 
@@ -54,6 +93,8 @@ pub fn key_128(pass: &str) -> u128 {
     }
     u128::from_le_bytes(x)
 }
+
+// TODO: should not be exported. implementing ciphers should use Bacon.data
 
 // TODO: should not be exported. implementing ciphers should use Bacon.data
 #[macro_export]
@@ -80,10 +121,10 @@ macro_rules! fry {
 
 #[macro_export]
 macro_rules! unfry {
-    ($fried_bacon:ident, $target:ty) => {
+    ($bacon:ident, $target:ty) => {
         {
             let mut decr_bytes: Vec<u8> = vec![];
-            for block in $fried_bacon.data {
+            for block in $bacon.data {
                 for byte in u128::to_le_bytes(block).iter() {
                     decr_bytes.push(*byte);
                 }    
