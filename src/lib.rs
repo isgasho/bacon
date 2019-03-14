@@ -36,36 +36,7 @@ impl Bacon {
         Bacon { state, descr, data }
     }
 }
-/*
-Bacon {
-    state: Fried,
-    descr: Some(
-        {
-            "Type": "examples/speck::Dancer",
-            "Cipher": "bacon::ciphers::speck::Speck"
-        }
-    ),
-    data: [
-        229965607915813845722151454364448246776,
-        298073251133161606498395778151909232536,
-        327638238595840205410302835760351697012,
-        168275590793864324729845200116168390578,
-        166550460845743965776596515550712238557,
-        206550846213499455913740877942280604955
-    ]
-}*/
-// impl Display for Bacon {
-//       fn fmt(&self, f: &mut Formatter) -> Result {
-//         let mut data_str: String = String::new();
-//         data_tr.push_str("data: [\n");
-//         for block in self.data {
-//             data.push_str(block);
-//             data.push_str(",\n");
-//         }
-//         data_str.push_str("]\n}");
-//         write!(f, "Bacon {{\n    state: {},    {", self.state, self.y)
-//     }
-// }
+
 impl From<String> for Bacon {
      fn from(string:  String) -> Self {
         let data = fry!(string);
