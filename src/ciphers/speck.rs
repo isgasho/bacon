@@ -11,7 +11,7 @@ macro_rules! round {
     ($x:ident, $y:ident, $k:ident) => {
         $x = $x.rotate_right(8);
         $x = $x.wrapping_add($y);
-        $x ^= $k;
+        $x ^= $k as u64;
         $y = $y.rotate_left(3);
         $y ^= $x;
     }
@@ -28,9 +28,8 @@ macro_rules! inv_round {
     }
 }
 
-const ROUNDS: u64 = 32;
 /// The Speck Cipher
-pub struct Speck { schedule: [u64; ROUNDS as usize], }
+pub struct Speck { schedule: [u64; 32 as usize], }
 
 impl Cipher for Speck {
     type Key = u128;
@@ -43,7 +42,7 @@ impl Cipher for Speck {
         // Run `ROUNDS - 1` rounds to generate the key's endpoint (the last key in the schedule).
         println!("{:?}", ret.schedule.len());
     
-        for i in 0..ROUNDS {
+        for i in 0..ret.schedule.len() {
             // Insert the key into the schedule.
             ret.schedule[i as usize] = k2;
             // The beautiful thing about SPECK is that it reuses its round function to generate the
