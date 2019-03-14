@@ -25,11 +25,11 @@ fn handle_client(mut stream: TcpStream) {
     let mut bacon: Bacon = bincode::deserialize(&buffer).unwrap();
     dbg!(&bacon);
     let key_u128 = bacon::key_128("ufj6/ud.-%gdkfue"); // 17ZhjI3j/dshn3Kj
-    let cipher: Speck = Speck::new(key_u128);
+    let cipher: Speck = Speck::new(key_u128, None);
     bacon = cipher.decrypt(bacon);
     match unfry!(bacon, String) {
         Ok(s) => { 
-            println!("We haved received the following message.");
+            println!("We haved received the following message:");
             dbg!(s);
         },
         Err(e) => {

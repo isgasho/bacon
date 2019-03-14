@@ -37,13 +37,15 @@ fn main() {
     // receiving 79 decimal string secret from command line
     let  mut args: Vec<String> = std::env::args().collect();
     // create Cipher with cipher specified key length (here: u128)
-    let cipher: ChaCha20 = ChaCha20::new(U256::from_dec_str(&args[1]).unwrap());
+    let cipher: ChaCha20 = ChaCha20::new(U256::from_dec_str(&args[1]).unwrap(), None);
 
     // fry bacon
     bacon = cipher.encrypt(bacon);
     println!("fried bacon: {:#?}", bacon);
     // unfry bacon
-    bacon = cipher.decrypt(bacon);
+    let cipher_2: ChaCha20 = ChaCha20::new(U256::from_dec_str(&args[1]).unwrap(), None);
+
+    bacon = cipher_2.decrypt(bacon);
     println!("unfried bacon: {:#?}", bacon);
     let new_dancer: Dancer = unfry!(bacon, Dancer).unwrap();
     dbg!(new_dancer);

@@ -11,7 +11,7 @@ fn main() -> std::io::Result<()> {
     // second argument to be the secret key known to user and server
     let mut key_u128 = bacon::key_128(&args[2]); 
     //dbg!(key_u128);
-    let cipher: Speck = Speck::new(key_u128);
+    let cipher: Speck = Speck::new(key_u128, None);
     key_u128 = 0;
     //drop(key_u128);
     // third argument to be the secret message
@@ -30,5 +30,4 @@ fn main() -> std::io::Result<()> {
     stream.write(&ser)?;
     stream.read(&mut [0; 512])?;
     Ok(())
-
 }

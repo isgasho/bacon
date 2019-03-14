@@ -44,7 +44,7 @@ fn main() {
     );
     println!("Fried(serialized) bank_account:\n{:#?}", &bcn_bank_account);
     // use ciphers::{ Cipher, speck::Speck, Decrypt, Encrypt }
-    let cipher = Speck::new(key_u128);
+    let cipher = Speck::new(key_u128, None);
     // Encrypt the bank account
     bcn_bank_account = cipher.encrypt(bcn_bank_account);
     // emptying and dropping key as soon as possible
@@ -55,7 +55,7 @@ fn main() {
     println!("A Person with partially encrypted data:\n{:#?}", person);
     // attempt to decrypt bank account info with wrong key
     let wrong_key_u128 =  bacon::key_128("dk-lf/.Mjl38Nhd!");
-    let malicious = Speck::new(key_u128);
+    let malicious = Speck::new(key_u128, None);
     let corrupted_bank_account = malicious.decrypt(person.bank_account.clone());
     // note that no error message is returned. The equal length of the blocks show that it has not been
     // successfully decrypted.

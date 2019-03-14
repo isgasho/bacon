@@ -38,7 +38,7 @@ fn main() {
     // turning key into a u128
     let mut key_u128 = bacon::key_128(&args[1]);
     // create Cipher with cipher specified key length (here: u128)
-    let cipher: Speck = Speck::new(key_u128);
+    let cipher: Speck = Speck::new(key_u128, None);
     // empty nullify and drop key as soon as possible
     key_u128 = 0;
     drop(key_u128);
