@@ -1,5 +1,7 @@
-//! The bacon crate provides functionality to en- and decrypt (called frying and unfrying),
-//! arbitrary ```struct T where T: Serialize + Deserialize```
+//! The bacon crate is an interface to ease the implementation of new Ciphers.
+//! Bacon is an adapter to the Speck and Chacha20 ciphers and provides functionality 
+//! to en- and decrypt an arbitrary struct```struct T where T: Serialize + Deserialize```
+
 #![forbid(unsafe_code)]
 extern crate bincode;
 extern crate serde;
@@ -11,11 +13,12 @@ use serde::{ Deserialize, Serialize };
 use ciphers::{ Cipher };
 use std::collections::HashMap;
 
-/// ```Bacon``` a wrapper for an encrypted struct (called bacon) stored in the field ```data: Vec<u128>```
-/// Implements ```Fry``` and ```Unfry```. Cannot fry or unfry itself. (may change in the future).
+/// Fried: Data stored in encrypted form. Unfried: The data is serialized but not encrypted.
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum BaconState { Fried, Unfried }
-#[derive(Clone, Debug, Serialize, Deserialize)]
+/// ```Bacon``` is a reusable wrapper for an arbitrarty serialized struct stored in the field ```data: Vec<u128>```
+/// The optional description can be used to share information regarding the Bacon, that may be neccessary to
+/// en-/decrypt a Bacon
 pub struct Bacon { pub state: BaconState, pub descr: Option<HashMap<String,String>>, pub data: Vec<u128> }
 
 impl Bacon {
@@ -46,6 +49,7 @@ pub fn key_128(pass: &str) -> u128 {
     u128::from_be_bytes(x)
 }
 
+// TODO: should not be exported. implementing ciphers should use Bacon.data
 #[macro_export]
 macro_rules! chunks {
     ($item:ident) => {
