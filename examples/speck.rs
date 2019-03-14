@@ -2,7 +2,9 @@
 extern crate serde;
 #[macro_use] extern crate serde_derive;
 extern crate bincode;
+
 use bacon::{ Bacon, BaconState, ciphers::{ Cipher, speck::Speck, Decrypt, Encrypt } };
+use std::collections::HashMap;
 
 #[derive(Debug, Deserialize, Serialize)]
 enum Sex { Male, Female, Diverse }
@@ -24,7 +26,11 @@ fn main() {
         descr: "CEO of SPECKTRE. Very evil.".to_string()
     };
     // optional description
-    let mut bacon = Bacon::new(BaconState::Unfried, None, person);
+    let mut descr: HashMap<String, String> = HashMap::new();
+    descr.insert("Cipher".to_string(), "bacon::ciphers::speck::Speck".to_string());
+    descr.insert("Type".to_string(), "bacon::examples::Person { String, u8, bacon::examples::Sex, String, String }".to_string());
+
+    let mut bacon = Bacon::new(BaconState::Unfried, Some(descr), person);
     println!("unfried bacon: {:#?}", bacon);
 
     // receiving 16 character secret from command line
