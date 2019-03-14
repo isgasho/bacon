@@ -15,7 +15,12 @@ use std::collections::HashMap;
 
 /// Fried: Data stored in encrypted form. Unfried: The data is serialized but not encrypted.
 #[derive(Clone, Debug, Serialize, Deserialize)]
-pub enum BaconState { Fried, Unfried }
+pub enum BaconState {
+    /// The data stored in Bacon is encrypted (and previously serialized)
+    Fried,
+    /// The data stored in Bacon is serialized not not encrypted
+    Unfried
+}
 /// ```Bacon``` is a reusable wrapper for an arbitrarty serialized struct stored in the field ```data: Vec<u128>```
 /// The optional description can be used to share information regarding the Bacon, that may be neccessary to
 /// en-/decrypt a Bacon

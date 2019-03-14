@@ -1,3 +1,5 @@
+//! Bacon does not provide an own imiplementation. The ChaCha20 Cipher used is the
+//! [crate chacha v0.3.0](https://docs.rs/chacha/0.3.0/chacha/)
 extern crate chacha;
 use super::{ super::{ Bacon, BaconState }, Cipher, Decrypt, Encrypt };
 use bigint::uint::U256;
