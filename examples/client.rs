@@ -1,33 +1,44 @@
 #[macro_use] extern crate bacon;
+extern crate bigint;
 extern crate bincode;
+use bacon::{ Bacon, BaconState, ciphers::{ Authenticate, Cipher, chacha20::ChaCha20, Encrypt, Nonce } };
+use bigint::uint::U256;
+use std::{ collections::HashMap, io::prelude::*, net::UdpSocket };
 
-use bacon::{ Bacon, BaconState, ciphers::{ Cipher, speck::Speck, Encrypt } };
-use std::{ collections::HashMap, io::prelude::*, net::TcpStream };
+const BIND_ADDR: &str = "127.0.0.1:64101";
 
-// $ cargo run --example client 127.0.0.1:64100 17ZhjI3j/dshn3Kj "Super secreat message"
+
+// $ cargo run --example client 127.0.0.1:64100 "Super secret message"
 fn main() -> std::io::Result<()> {
     let args: Vec<String> = std::env::args().collect();
-    //dbg!(&args[2]);
-    // second argument to be the secret key known to user and server
-    let mut key_u128 = bacon::key_128(&args[2]); 
-    //dbg!(key_u128);
-    let cipher: Speck = Speck::new(key_u128, None);
-    key_u128 = 0;
-    //drop(key_u128);
-    // third argument to be the secret message
-    let mut descr: HashMap<String, String> = HashMap::new();
-    descr.insert("Cipher".to_string(), "bacon::ciphers::speck::Speck".to_string());
-    descr.insert("Type".to_string(), "std::string::String".to_string());
-    let mut bacon = Bacon::new(BaconState::Unfried, Some(descr), args[3].clone());
-    //dbg!(&bacon);
+    // key
+    let key: U256 = U256::from_dec_str("102853573294759285723534561345875635123503952762319857163587163501983275012378").unwrap();
+    let cipher: ChaCha20 = ChaCha20::new(key, Nonce::BaconDefault);
+    
+    let mut bacon = Bacon::new(BaconState::Unfried, None, args[2].clone());
     bacon = cipher.encrypt(bacon);
-    //dbg!(&bacon);
-    // send to server
-    let ser: Vec<u8> = bincode::serialize(&bacon).unwrap();
-    //dbg!(&ser);
-    //drop(bacon);
-    let mut stream = TcpStream::connect("127.0.0.1:64100")?;
-    stream.write(&ser)?;
-    stream.read(&mut [0; 512])?;
+    let mut buf: Vec<u8> = bincode::serialize(&bacon).unwrap();
+    drop(bacon);
+
+    // udp socket
+    let mut socket = UdpSocket::bind(BIND_ADDR)?;
+    match socket.send_to(&buf, "127.0.0.1:64100") {
+        Ok(size) => {
+            println!("{} bytes sent.", size);
+        },
+        _ => {}
+    }
+    // loop {
+    //     let mut recv_buf = [0; 512];
+    //     match socket.recv_from(&mut recv_buf) {
+    //         Ok((amt, src)) => {
+    //             println!("Receiving from {}", src);
+    //             let bacon_package: BaconPackage = bincode::deserialize(&recv_buf).unwrap();
+    //             dbg!(bacon_package);
+    //             break;
+    //         },
+    //         _ => {}
+    //     }
+    // }
     Ok(())
 }
