@@ -3,7 +3,7 @@
 //! SPECK is a really simple block cipher designed by the NSA. It is famous for its simple
 //! structure and code size, which can fit in just a couple of lines, while still preserving
 //! security.
-use super::{ super::{ Bacon, BaconState }, Cipher, Decrypt, Encrypt };
+use super::{ super::{ Bacon, BaconState }, Cipher, Decrypt, Encrypt, Nonce };
 
 /// A single round of SPECK.
 /// This is a keyed ARX transformation.
@@ -35,7 +35,8 @@ impl Cipher for Speck {
     type Key = u128;
     type Cipher = Speck;
     /// Creates a ne Speck Cipher. The key: u128 split into k1: u64 and k2: u64
-    fn new(k: Self::Key, n: Option<[u8; 8]>) -> Self {
+    /// The Speck Cipher does not use a Nonce, Nonce::None or any other type.
+    fn new(k: Self::Key, n: Nonce) -> Self {
         let mut k1 = (k >> 64) as u64;
         let mut k2 = k as u64;
 
