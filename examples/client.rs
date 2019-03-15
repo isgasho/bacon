@@ -7,24 +7,37 @@ use std::{ collections::HashMap, io::prelude::*, net::UdpSocket };
 
 const BIND_ADDR: &str = "127.0.0.1:64101";
 
-
 // $ cargo run --example client 127.0.0.1:64100 "Super secret message"
 fn main() -> std::io::Result<()> {
     let args: Vec<String> = std::env::args().collect();
     // key
     let key: U256 = U256::from_dec_str("102853573294759285723534561345875635123503952762319857163587163501983275012378").unwrap();
-    let cipher: ChaCha20 = ChaCha20::new(key, Nonce::BaconDefault);
     
-    let mut bacon = Bacon::new(BaconState::Unfried, None, args[2].clone());
+    // the Bacon::new serializes the payload 
+    let mut bacon = Bacon::new(BaconState::Unfried, None, args[1].clone());
+    // but can be deserialized with:
+    let clone = bacon.clone();
+    let unfr = unfry!(clone, String);
+    dbg!(&unfr);
+
+    let cipher: ChaCha20 = ChaCha20::new(key, Nonce::BaconDefault);
     bacon = cipher.encrypt(bacon);
-    let mut buf: Vec<u8> = bincode::serialize(&bacon).unwrap();
+    dbg!(&bacon);
+    // create a hashed tag from the bacon
+    // let mac = cipher.hash(&bacon);
+    // let mut descr = HashMap::new();
+    // descr.insert("Tag".to_string(), mac.to_string());
+    // bacon.descr = Some(descr);
+    
+    // serialize bacon
+    let buf: Vec<u8> = bincode::serialize(&bacon).unwrap();
     drop(bacon);
 
     // udp socket
     let mut socket = UdpSocket::bind(BIND_ADDR)?;
     match socket.send_to(&buf, "127.0.0.1:64100") {
         Ok(size) => {
-            println!("{} bytes sent.", size);
+            println!("{:?} bytes sent.", size);
         },
         _ => {}
     }
@@ -41,4 +54,6 @@ fn main() -> std::io::Result<()> {
     //     }
     // }
     Ok(())
+
+
 }

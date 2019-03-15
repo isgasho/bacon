@@ -15,10 +15,10 @@ fn main() {
     let bacon = Bacon::new(BaconState::Unfried, None, msg);
     // ChaCha20 with n: None uses a random nonce and result in a different hash, Decryption will fail
     let key: U256 = U256::from_dec_str("102853573294759285723534561345875635123503952762319857163587163501983275012378").unwrap();
-    // Two ChaCha20 with use a random nonce if none explicity passed.
-    let cipher: ChaCha20 = ChaCha20::new(key, Nonce::None);
-    let cipher_2: ChaCha20 = ChaCha20::new(key, Nonce::None);
+    // Two ChaCha20 with different Nonce result in different hashes
+    let cipher: ChaCha20 = ChaCha20::new(key, Nonce::Rand);
+    let cipher_2: ChaCha20 = ChaCha20::new(key, Nonce::Rand);
     // The two ciphers will have two different hashes. A remote Cipher will not be able to decrypt the bacon
-    dbg!(cipher.hash(&bacon));
-    dbg!(cipher_2.hash(&bacon));
+    dbg!(cipher.hash(bacon.clone()));
+    dbg!(cipher_2.hash(bacon));
 }

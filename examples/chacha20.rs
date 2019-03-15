@@ -35,7 +35,7 @@ fn main() {
     println!("unfried bacon: {:#?}", bacon);
 
     // receiving 79 decimal string secret from command line
-    let  mut args: Vec<String> = std::env::args().collect();
+    let mut args: Vec<String> = std::env::args().collect();
     // create Cipher with cipher specified key length (here: u128)
     let nonce: [u8; 8] = [9_u8, 7_u8, 5_u8, 1_u8, 3_u8, 1_u8, 3_u8, 5_u8];
     let cipher: ChaCha20 = ChaCha20::new(U256::from_dec_str(&args[1]).unwrap(), Nonce::Custom(nonce));

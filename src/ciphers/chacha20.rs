@@ -35,6 +35,8 @@ impl Cipher for ChaCha20 {
 struct BlockSize(u8);
 impl Authenticate for ChaCha20 {  // TODO: Hash not impl for HashMap<String, String> of Bacon
     fn hash(&self, bacon: Bacon)-> MAC {
+        //self.encrypt(*bacon);
+    
         let mut hasher = DefaultHasher::new();
         self.key.hash(&mut hasher);
         self.nonce.hash(&mut hasher);
@@ -49,7 +51,7 @@ impl Authenticate for ChaCha20 {  // TODO: Hash not impl for HashMap<String, Str
         bacon.data.hash(&mut hasher);
 
         ( o_k | (i_k | hasher.finish() ) ).hash(&mut hasher);
-
+    
         MAC( hasher.finish() )
     }
 }

@@ -38,14 +38,14 @@ impl Bacon {
 }
 
 impl From<String> for Bacon {
-     fn from(string:  String) -> Self {
+    fn from(string:  String) -> Self {
         let data = fry!(string);
         Bacon { state: BaconState::Unfried, descr: None, data }
-     }
+    }
 }
 
 impl From<Vec<String>> for Bacon {
-     fn from(strings: Vec<String>) -> Self {
+    fn from(strings: Vec<String>) -> Self {
         let mut data: Vec<Vec<u128>> = vec![];
         for string in strings {
             data.push(fry!(string));
@@ -58,7 +58,7 @@ impl From<Vec<String>> for Bacon {
 /// Utility function to turn a ```&str``` into a u128. The max length considered is 16 characters.
 pub fn key_128(pass: &str) -> u128 {
     let mut x:  [u8; 16] = [0; 16];
-     for (count, byte) in pass.as_bytes().iter().enumerate() {
+    for (count, byte) in pass.as_bytes().iter().enumerate() {
         x[count] = *byte;
     }
     u128::from_le_bytes(x)
