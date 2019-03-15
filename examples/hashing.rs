@@ -19,6 +19,6 @@ fn main() {
     let cipher: ChaCha20 = ChaCha20::new(key, Nonce::None);
     let cipher_2: ChaCha20 = ChaCha20::new(key, Nonce::None);
     // The two ciphers will have two different hashes. A remote Cipher will not be able to decrypt the bacon
-    dbg!(cipher.hash(bacon.clone()));
-    dbg!(cipher_2.hash(bacon.clone()));
+    dbg!(cipher.hash(&bacon));
+    dbg!(cipher_2.hash(&bacon));
 }

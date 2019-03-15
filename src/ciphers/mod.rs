@@ -22,7 +22,7 @@ pub trait Cipher {
     fn new(k: Self::Key, n: Nonce) -> Self;
 }
 pub trait Authenticate : Hash {
-    fn hash(&self, bacon: Bacon) -> MAC;
+    fn hash(&self, bacon: &Bacon) -> MAC;
 }
 // TODO: return Result<Bacon, BaconError<T> 
 pub trait Decrypt { fn decrypt(&self, bacon: Bacon) -> Bacon; }
