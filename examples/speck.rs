@@ -3,7 +3,7 @@ extern crate serde;
 #[macro_use] extern crate serde_derive;
 extern crate bincode;
 
-use bacon::{ Bacon, BaconState, ciphers::{ Cipher, speck::Speck, Decrypt, Encrypt } };
+use bacon::{ Bacon, BaconState, ciphers::{ Cipher, speck::Speck, Decrypt, Encrypt, Nonce } };
 use std::collections::HashMap;
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -38,7 +38,7 @@ fn main() {
     // turning key into a u128
     let mut key_u128 = bacon::key_128(&args[1]);
     // create Cipher with cipher specified key length (here: u128)
-    let cipher: Speck = Speck::new(key_u128, None);
+    let cipher: Speck = Speck::new(key_u128, Nonce::None);
     // empty nullify and drop key as soon as possible
     key_u128 = 0;
     drop(key_u128);
